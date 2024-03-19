@@ -5,7 +5,7 @@ Plot daily value.
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-def plot_daily(data_xarray, col_key, smoothing = 1, x_range = None, c ='blue', label = None):
+def plot_daily(data_xarray, col_key, smoothing = 1, x_range = None, c ='blue', label = None, axis = None):
     """
     Plot the daily GPP for a site.
 
@@ -16,6 +16,7 @@ def plot_daily(data_xarray, col_key, smoothing = 1, x_range = None, c ='blue', l
     x_range (list): The range of dates to plot, in the form [date].
     c (str): The color to plot the data.
     label (str): The label for the date in the plot's legend.
+    axis (plt.axis): The axis to plot the data on.
 
     Returns:
     None
@@ -30,12 +31,19 @@ def plot_daily(data_xarray, col_key, smoothing = 1, x_range = None, c ='blue', l
     data_xarray_daily_total['upper'] = data_xarray_daily_total[col_key].rolling(time=smoothing, center = True).construct('tmp').quantile(.04, dim='tmp')
 
     # Plot the daily GPP for all sites
-    data_xarray_daily_total['median'].plot(color = c, label=label)
-    plt.fill_between(data_xarray_daily_total['time'].values,
+    data_xarray_daily_total['median'].plot(color = c, label=label, ax = axis)
+
+    # Fill the area between the input confidence intervals
+    if(axis != None):
+        axis.fill_between(data_xarray_daily_total['time'].values,
                      data_xarray_daily_total['lower'].values[:, 0, 0],
                      data_xarray_daily_total['upper'].values[:, 0, 0],
-                     alpha = 0.5,
-                     color = c)
+                     alpha = 0.5, color = c)
+    else:
+        plt.fill_between(data_xarray_daily_total['time'].values,
+                         data_xarray_daily_total['lower'].values[:, 0, 0],
+                         data_xarray_daily_total['upper'].values[:, 0, 0],
+                         alpha = 0.5, color = c)
 
     # Set the x-axis range
     if(x_range != None):
