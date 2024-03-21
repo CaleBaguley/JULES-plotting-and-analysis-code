@@ -38,7 +38,7 @@ def plot_col_at_daily_time(data_xarray,
 
     # If a smoothing range is given then smooth the data
     if(smoothing != None):
-        data_xarray_daily = data_xarray_daily[variable_key].rolling(time=smoothing, center = True).mean()
+        data_xarray_daily[variable_key] = data_xarray_daily[variable_key].rolling(time=smoothing, center = True).mean()
 
     # Plot the daily values
     data_xarray_daily[variable_key].plot(color = c, label=label, ax = axis)
