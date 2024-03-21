@@ -5,9 +5,9 @@ Plot daily value.
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-def plot_daily(data_xarray, col_key, smoothing = 1, x_range = None, c ='blue', label = None, axis = None):
+def plot_daily(data_xarray, col_key, smoothing = 1, x_range = None, c ='blue', label = None, axs = None):
     """
-    Plot the daily GPP for a site.
+    Plot the daily total for a given variable.
 
     Args:
     data_xarray (xarray.Dataset): The input xarray dataset.
@@ -31,11 +31,11 @@ def plot_daily(data_xarray, col_key, smoothing = 1, x_range = None, c ='blue', l
     data_xarray_daily_total['upper'] = data_xarray_daily_total[col_key].rolling(time=smoothing, center = True).construct('tmp').quantile(.04, dim='tmp')
 
     # Plot the daily GPP for all sites
-    data_xarray_daily_total['median'].plot(color = c, label=label, ax = axis)
+    data_xarray_daily_total['median'].plot(color = c, label=label, ax = axs)
 
     # Fill the area between the input confidence intervals
-    if(axis != None):
-        axis.fill_between(data_xarray_daily_total['time'].values,
+    if(axs != None):
+        axs.fill_between(data_xarray_daily_total['time'].values,
                      data_xarray_daily_total['lower'].values[:, 0, 0],
                      data_xarray_daily_total['upper'].values[:, 0, 0],
                      alpha = 0.5, color = c)
