@@ -35,3 +35,11 @@ def load_jules_output_file_xarray(file_path):
     file = open_dataset(file_path)
 
     return file
+
+if __name__ == "__main__":
+    # Load the JULES output file
+    file_path = "~/Desktop/Flux_data/Plumber2_cat/Met/AR-SLu_2010-2010_FLUXNET2015_Met.nc"
+    file = load_jules_output_file_xarray(file_path)
+
+    # Print the file
+    print(file)
