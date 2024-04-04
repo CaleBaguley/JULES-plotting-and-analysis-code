@@ -13,7 +13,8 @@ def plot_col_at_daily_time(data_xarray,
                            x_range = None,
                            c ='blue',
                            label = None,
-                           axis = None):
+                           axis = None,
+                           title = None):
 
     """
     Plot the value of some input column at a given time of each day.
@@ -28,6 +29,7 @@ def plot_col_at_daily_time(data_xarray,
     c (str): The color to plot the data.
     label (str): The label for the date in the plot's legend.
     axis (plt.axis): The axis to plot the data on.
+    title (str): The title of the plot.
 
     Returns:
     None
@@ -40,6 +42,11 @@ def plot_col_at_daily_time(data_xarray,
     if(smoothing != None):
         data_xarray_daily[variable_key] = data_xarray_daily[variable_key].rolling(time=smoothing, center = True).mean()
 
+    # Create a new figure and set axs if there is no input axis
+    if(axis == None):
+        fig = plt.figure(figsize=(5, 5))
+        axis = plt.gca()
+
     # Plot the daily values
     data_xarray_daily[variable_key].plot(color = c, label=label, ax = axis)
 
@@ -49,7 +56,10 @@ def plot_col_at_daily_time(data_xarray,
         max_x = datetime.combine(x_range[1], datetime.min.time())
         plt.xlim(min_x, max_x)
 
-    plt.xlabel('Date')
-    plt.ylabel(variable_key)
+    axis.set_xlabel('Date')
+    axis.set_ylabel(variable_key)
+
+    if(title != None):
+        axis.set_title(title)
 
     return None
