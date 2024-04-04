@@ -1,11 +1,17 @@
 """
-Plot daily value.
+Plot timeseries data for different daily atributes:
+- Total
+- Mean
+- Median
+- Maximum
+- Minimum
+- Standard deviation
 """
 
-import matplotlib.pyplot as plt
-from datetime import datetime
+from src.plotting.plot_time_series import plot_time_series
 
-def plot_daily(data_xarray, col_key, smoothing = 1, x_range = None, c ='blue', label = None, axs = None, title = None):
+def plot_daily_total(data_xarray, col_key, smoothing = None, x_range = None, c ='blue', label = None, axs = None,
+                     title = None):
     """
     Plot the daily total for a given variable.
 
@@ -24,41 +30,150 @@ def plot_daily(data_xarray, col_key, smoothing = 1, x_range = None, c ='blue', l
     """
 
     # Calculate the daily total GPP
-    data_xarray_daily_total = data_xarray.resample(time="1D").sum()
+    data_xarray_daily_total = data_xarray[[col_key]].resample(time="1D").sum()
 
-    # Calculate median and 95% confidence intervals from the daily total GPP
-    data_xarray_daily_total['median'] = (data_xarray_daily_total[col_key].rolling(time=smoothing, center = True)
-                                         .construct('tmp').quantile(.50, dim='tmp'))
-    data_xarray_daily_total['lower'] = (data_xarray_daily_total[col_key].rolling(time=smoothing, center = True)
-                                        .construct('tmp').quantile(.96, dim='tmp'))
-    data_xarray_daily_total['upper'] = (data_xarray_daily_total[col_key].rolling(time=smoothing, center = True)
-                                        .construct('tmp').quantile(.04, dim='tmp'))
+    # Plot the daily total GPP
+    plot_time_series(data_xarray_daily_total, col_key, smoothing = smoothing, x_range = x_range, c = c, label = label,
+                     axs = axs, title = title)
 
-    # Create a new figure and set axs if there is no input axis
-    if(axs == None):
-        fig = plt.figure(figsize=(5, 5))
-        axs = plt.gca()
+    return None
 
-    # Plot the daily GPP for all sites
-    data_xarray_daily_total['median'].plot(color = c, label=label, ax = axs)
+def plot_daily_mean(data_xarray, col_key, smoothing = None, x_range = None, c ='blue', label = None, axs = None,
+                    title = None):
+    """
+    Plot the daily mean for a given variable.
 
-    # Fill the area between the input confidence intervals
-    axs.fill_between(data_xarray_daily_total['time'].values,
-                 data_xarray_daily_total['lower'].values[:, 0, 0],
-                 data_xarray_daily_total['upper'].values[:, 0, 0],
-                 alpha = 0.5, color = c)
+    Args:
+    data_xarray (xarray.Dataset): The input xarray dataset.
+    col_key (str): The key for the GPP variable.
+    smoothing (int): The number of days to smooth the data by.
+    x_range (list): The range of dates to plot, in the form [date].
+    c (str): The color to plot the data.
+    label (str): The label for the date in the plot's legend.
+    axis (plt.axis): The axis to plot the data on.
+    title (str): The title of the plot.
 
+    Returns:
+    None
+    """
 
-    # Set the x-axis range
-    if(x_range != None):
-        min_x = datetime.combine(x_range[0], datetime.min.time())
-        max_x = datetime.combine(x_range[1], datetime.min.time())
-        plt.xlim(min_x, max_x)
+    # Calculate the daily total GPP
+    data_xarray_daily_total = data_xarray[[col_key]].resample(time="1D").mean()
 
-    axs.set_xlabel('Date')
-    axs.set_ylabel(col_key)
+    # Plot the daily total GPP
+    plot_time_series(data_xarray_daily_total, col_key, smoothing = smoothing, x_range = x_range, c = c, label = label,
+                     axs = axs, title = title)
 
-    if(title != None):
-        axs.set_title(title)
+    return None
+
+def plot_daily_median(data_xarray, col_key, smoothing = None, x_range = None, c ='blue', label = None, axs = None,
+                    title = None):
+    """
+    Plot the daily median for a given variable.
+
+    Args:
+    data_xarray (xarray.Dataset): The input xarray dataset.
+    col_key (str): The key for the GPP variable.
+    smoothing (int): The number of days to smooth the data by.
+    x_range (list): The range of dates to plot, in the form [date].
+    c (str): The color to plot the data.
+    label (str): The label for the date in the plot's legend.
+    axis (plt.axis): The axis to plot the data on.
+    title (str): The title of the plot.
+
+    Returns:
+    None
+    """
+
+    # Calculate the daily total GPP
+    data_xarray_daily_total = data_xarray[[col_key]].resample(time="1D").median()
+
+    # Plot the daily total GPP
+    plot_time_series(data_xarray_daily_total, col_key, smoothing = smoothing, x_range = x_range, c = c, label = label,
+                     axs = axs, title = title)
+
+    return None
+
+def plot_daily_max(data_xarray, col_key, smoothing = None, x_range = None, c ='blue', label = None, axs = None,
+                    title = None):
+    """
+    Plot the daily maximum for a given variable.
+
+    Args:
+    data_xarray (xarray.Dataset): The input xarray dataset.
+    col_key (str): The key for the GPP variable.
+    smoothing (int): The number of days to smooth the data by.
+    x_range (list): The range of dates to plot, in the form [date].
+    c (str): The color to plot the data.
+    label (str): The label for the date in the plot's legend.
+    axis (plt.axis): The axis to plot the data on.
+    title (str): The title of the plot.
+
+    Returns:
+    None
+    """
+
+    # Calculate the daily total GPP
+    data_xarray_daily_total = data_xarray[[col_key]].resample(time="1D").max()
+
+    # Plot the daily total GPP
+    plot_time_series(data_xarray_daily_total, col_key, smoothing = smoothing, x_range = x_range, c = c, label = label,
+                     axs = axs, title = title)
+
+    return None
+
+def plot_daily_min(data_xarray, col_key, smoothing = None, x_range = None, c ='blue', label = None, axs = None,
+                    title = None):
+    """
+    Plot the daily minimum for a given variable.
+
+    Args:
+    data_xarray (xarray.Dataset): The input xarray dataset.
+    col_key (str): The key for the GPP variable.
+    smoothing (int): The number of days to smooth the data by.
+    x_range (list): The range of dates to plot, in the form [date].
+    c (str): The color to plot the data.
+    label (str): The label for the date in the plot's legend.
+    axis (plt.axis): The axis to plot the data on.
+    title (str): The title of the plot.
+
+    Returns:
+    None
+    """
+
+    # Calculate the daily total GPP
+    data_xarray_daily_total = data_xarray[[col_key]].resample(time="1D").min()
+
+    # Plot the daily total GPP
+    plot_time_series(data_xarray_daily_total, col_key, smoothing = smoothing, x_range = x_range, c = c, label = label,
+                     axs = axs, title = title)
+
+    return None
+
+def plot_daily_std(data_xarray, col_key, smoothing = None, x_range = None, c ='blue', label = None, axs = None,
+                    title = None):
+    """
+    Plot the daily standard deviation for a given variable.
+
+    Args:
+    data_xarray (xarray.Dataset): The input xarray dataset.
+    col_key (str): The key for the GPP variable.
+    smoothing (int): The number of days to smooth the data by.
+    x_range (list): The range of dates to plot, in the form [date].
+    c (str): The color to plot the data.
+    label (str): The label for the date in the plot's legend.
+    axis (plt.axis): The axis to plot the data on.
+    title (str): The title of the plot.
+
+    Returns:
+    None
+    """
+
+    # Calculate the daily total GPP
+    data_xarray_daily_total = data_xarray[[col_key]].resample(time="1D").std()
+
+    # Plot the daily total GPP
+    plot_time_series(data_xarray_daily_total, col_key, smoothing = smoothing, x_range = x_range, c = c, label = label,
+                     axs = axs, title = title)
 
     return None
