@@ -4,7 +4,7 @@ Plot the flux data from a set of jules outputs.
 
 import xarray
 import matplotlib.pyplot as plt
-from src.plotting.plot_daily import plot_daily
+from src.plotting.plot_daily import plot_daily_total, plot_daily_mean
 from src.plotting.plot_col_at_daily_time import plot_col_at_daily_time
 from src.load_jules_output_file import open_dataset
 
@@ -58,14 +58,14 @@ def plot_flux_data(data_xarrays, labels, colours, title = None, timestep_s = 360
 
     # ---- Plot the GPP data ----
     for i in range(len(data_xarrays)):
-        plot_daily(data_xarrays[i], "gpp_gb", c = colours[i], label = labels[i], axs = axs[0], title = "")
+        plot_daily_total(data_xarrays[i], "gpp_gb", c = colours[i], label = labels[i], axs = axs[0], title = "")
 
     # set the y-axis label
     axs[0].set_ylabel("GPP (gC m-2 day-1)")
 
     # ---- Plot the latent heat data ----
     for i in range(len(data_xarrays)):
-        plot_daily(data_xarrays[i], "latent_heat", c = colours[i], label = labels[i], axs = axs[1], title = "")
+        plot_daily_mean(data_xarrays[i], "latent_heat", c = colours[i], label = labels[i], axs = axs[1], title = "")
 
     # set the y-axis label
     axs[1].set_ylabel("Latent Heat (W m-2)")
@@ -85,9 +85,9 @@ def plot_flux_data(data_xarrays, labels, colours, title = None, timestep_s = 360
 
 if __name__ == "__main__":
     # Load the JULES output files
-    file_path = "../../../data/data_runs/stomatal_optimisation_runs/testing/FI_Lom-fsmc_comp.h.nc"
-    file = open_dataset(file_path)
+    file_path_1 = "../../../data/data_runs/stomatal_optimisation_runs/plumber2_runs/Prof_Max_JULES_runs/AT_Neu-JULES_vn7.4-presc0.D.2006.nc"
+    file_1 = open_dataset(file_path_1)
 
     # Plot the flux data
-    plot_flux_data(file, "JULES Output", "blue", "JULES Output")
+    plot_flux_data(file_1, "JULES Output", "blue", "JULES Output")
     plt.show()
