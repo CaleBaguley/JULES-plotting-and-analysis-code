@@ -20,7 +20,7 @@ def plot_flux_data(data_xarrays, labels, colours, title = None, timestep_s = 360
     :return: None
     """
 
-    # Check input arrays.
+# --- Check input arrays. ---
     # Check the input data_xarrays is a list of xarray.Dataset
     if(type(data_xarrays) == xarray.Dataset):
         data_xarrays = [data_xarrays]
@@ -37,12 +37,14 @@ def plot_flux_data(data_xarrays, labels, colours, title = None, timestep_s = 360
     elif(type(colours) != list):
         raise ValueError("The input colours must be a list of strings.")
 
+# --- Data processing. ---
     # Convert GPP data units from kgC m-2 s-1 to gC m-2 timestep-1
     for i in range(len(data_xarrays)):
         data_xarrays[i]["gpp_gb"] = data_xarrays[i]["gpp_gb"] * timestep_s * 1000
 
+# --- Plot the data. ---
     # Create figure with multiple subplots.
-    fig, axs = plt.subplots(3, 1, figsize=(15, 45), sharex=True)
+    fig, axs = plt.subplots(3, 1, figsize=(8, 5), sharex=True)
 
     # Set the title of the plot
     if(title != None):
@@ -56,14 +58,14 @@ def plot_flux_data(data_xarrays, labels, colours, title = None, timestep_s = 360
 
     # ---- Plot the GPP data ----
     for i in range(len(data_xarrays)):
-        plot_daily(data_xarrays[i], "gpp_gb", c = colours[i], label = labels[i], axs = axs[0])
+        plot_daily(data_xarrays[i], "gpp_gb", c = colours[i], label = labels[i], axs = axs[0], title = "")
 
     # set the y-axis label
     axs[0].set_ylabel("GPP (gC m-2 day-1)")
 
     # ---- Plot the latent heat data ----
     for i in range(len(data_xarrays)):
-        plot_daily(data_xarrays[i], "latent_heat", c = colours[i], label = labels[i], axs = axs[1])
+        plot_daily(data_xarrays[i], "latent_heat", c = colours[i], label = labels[i], axs = axs[1], title = "")
 
     # set the y-axis label
     axs[1].set_ylabel("Latent Heat (W m-2)")
@@ -72,7 +74,8 @@ def plot_flux_data(data_xarrays, labels, colours, title = None, timestep_s = 360
     for i in range(len(data_xarrays)):
         data_xarrays[i]["psi_leaf_mean"] = data_xarrays[i]["psi_leaf_pft"].mean(dim= "pft")
         print(data_xarrays[i]["psi_leaf_pft"])
-        plot_col_at_daily_time(data_xarrays[i], "psi_leaf_mean", "12:00:00", c = colours[i], label = labels[i])
+        plot_col_at_daily_time(data_xarrays[i], "psi_leaf_mean", "12:00:00",
+                               c = colours[i], label = labels[i], title = "", axis = axs[2])
 
     # set the y-axis label
     axs[2].set_ylabel("Leaf Water Potential (MPa)")
