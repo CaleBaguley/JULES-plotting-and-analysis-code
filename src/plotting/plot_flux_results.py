@@ -8,13 +8,13 @@ from src.plotting.plot_daily import plot_daily_total, plot_daily_mean
 from src.plotting.plot_col_at_daily_time import plot_col_at_daily_time
 from src.load_jules_output_file import open_dataset
 
-def plot_flux_data(data_xarrays, observation_xarrays, labels, data_colours, observation_colours,
+def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, observation_colours,
                    title = None, timestep_s = 3600.0, smoothing = None, x_range = None):
 
     """
     Plot the flux data from a set of jules outputs.
     :param data_xarrays: The input xarray datasets. Xarray.Dataset or list of Xarray.Dataset
-    :param observation_xarrays: The observational data. Xarray.Dataset
+    :param observation_xarray: The observational data. Xarray.Dataset
     :param labels: The labels to plot the data with. String or list of strings.
     :param data_colours: The colours to plot the data in. String or list of strings.
     :param observation_colours: The colours to plot the observational data in. String.
@@ -42,8 +42,16 @@ def plot_flux_data(data_xarrays, observation_xarrays, labels, data_colours, obse
 
 # --- Data processing. ---
     # Convert GPP data units from kgC m-2 s-1 to gC m-2 timestep-1
+    # kgC -> gC: * 1000
+    # s-1 -> timestep-1: * timestep_s
     for i in range(len(data_xarrays)):
         data_xarrays[i]["gpp_gb"] = data_xarrays[i]["gpp_gb"] * timestep_s * 1000
+
+    # Convert GPP data units from umol m-2 s-1 to gC m-2 timestep-1
+    # umol -> mol: * 1e-6
+    # mol -> g: * 12.01
+    # s-1 -> timestep-1: * timestep_s
+    observation_xarray["GPP"] = observation_xarray["GPP"] * timestep_s * 1e-6 * 12.01
 
 # --- Plot the data. ---
     # Create figure with multiple subplots.
@@ -63,6 +71,10 @@ def plot_flux_data(data_xarrays, observation_xarrays, labels, data_colours, obse
     for i in range(len(data_xarrays)):
         plot_daily_total(data_xarrays[i], "gpp_gb", c = data_colours[i], label = labels[i], axs = axs[0],
                          title = "", smoothing = smoothing, x_range = x_range)
+
+    # Plot the observational data
+    plot_daily_total(observation_xarray, "GPP", c=observation_colours, label=labels[i], axs=axs[0],
+                     title="", smoothing=smoothing, x_range=x_range)
 
     # set the y-axis label
     axs[0].set_ylabel("GPP (gC m-2 day-1)")
@@ -92,6 +104,9 @@ def plot_flux_data(data_xarrays, observation_xarrays, labels, data_colours, obse
 
 
 if __name__ == "__main__":
+
+    from datetime import datetime
+
     # Load the JULES output files
     data_file_paths = ["../../../data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_PMax_run/AT_Neu-JULES_vn7.4-presc0.Stom_opt.nc"]
 
@@ -100,10 +115,17 @@ if __name__ == "__main__":
         data_files.append(open_dataset(path))
 
     # Load the observational data
-    observation_file_path = "../../../data/PLUMBER2/met/AT-Neu_2002-2012_FLUXNET2015_Met.nc"
+    observation_file_path = "~/Desktop/Flux_data/Plumber2_catalogue_data/Flux/AT-Neu_2002-2012_FLUXNET2015_FLUX.nc"
 
     observation_file = open_dataset(observation_file_path)
 
     # Plot the flux data
-    plot_flux_data(data_files[0], observation_file, "JULES Output", "blue", "orange", "JULES Output", smoothing = 30)
+    plot_flux_data(data_files[0],
+                   observation_file,
+                   "JULES Output",
+                   "blue",
+                   "orange",
+                   "JULES Output",
+                   smoothing = 30,
+                   x_range = [datetime(2007,1,1), datetime(2013,1,1)])
     plt.show()
