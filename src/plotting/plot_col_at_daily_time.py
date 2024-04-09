@@ -40,7 +40,13 @@ def plot_col_at_daily_time(data_xarray,
 
     # If a smoothing range is given then smooth the data
     if(smoothing != None):
-        data_xarray_daily[variable_key] = data_xarray_daily[variable_key].rolling(time=smoothing, center = True).mean()
+        # Calculate median and 95% confidence intervals from the daily total GPP
+        data_xarray_daily['median'] = (data_xarray_daily[variable_key].rolling(time=smoothing, center=True)
+                                     .construct('tmp').quantile(.50, dim='tmp'))
+        data_xarray_daily['lower'] = (data_xarray_daily[variable_key].rolling(time=smoothing, center=True)
+                                    .construct('tmp').quantile(.96, dim='tmp'))
+        data_xarray_daily['upper'] = (data_xarray_daily[variable_key].rolling(time=smoothing, center=True)
+                                    .construct('tmp').quantile(.04, dim='tmp'))
 
     # Create a new figure and set axs if there is no input axis
     if(axis == None):
@@ -48,7 +54,19 @@ def plot_col_at_daily_time(data_xarray,
         axis = plt.gca()
 
     # Plot the daily values
-    data_xarray_daily[variable_key].plot(color = c, label=label, ax = axis)
+    # If smoothing is given plot the smoothed data
+    if(smoothing != None):
+        data_xarray_daily['median'].plot(color=c, label=label, ax=axis)
+
+        # Fill the area between the input confidence intervals
+        axis.fill_between(data_xarray_daily['time'].values,
+                          data_xarray_daily['lower'].values[:, 0, 0],
+                          data_xarray_daily['upper'].values[:, 0, 0],
+                          alpha=0.5, color=c)
+    # If no smoothing is given plot the raw data
+    else:
+        data_xarray_daily[variable_key].plot(color = c, label=label, ax = axis)
+
 
     # Set the x-axis range
     if(x_range != None):
