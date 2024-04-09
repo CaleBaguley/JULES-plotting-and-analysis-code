@@ -49,7 +49,7 @@ def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, obser
     for i in range(len(data_xarrays)):
         timestep = data_xarrays[i]["time"].values[1] - data_xarrays[i]["time"].values[0]
         timestep = timestep.astype("timedelta64[s]").astype(int)
-        data_xarrays[i]["gpp_gb"] = data_files[i]["gpp_gb"] * 1000 * timestep
+        data_xarrays[i]["gpp_gb"] = data_xarrays[i]["gpp_gb"] * 1000 * timestep
 
     # Convert GPP data units from umol m-2 s-1 to gC m-2 timestep-1
     # umol -> mol: * 1e-6
