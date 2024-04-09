@@ -38,6 +38,26 @@ def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_label
     # change the - to a _ in the observation sites to match the JULES sites
     observation_sites = [site.replace("-", "_") for site in observation_sites]
 
+    # collate the sites that are available in all the folders and their associated file addresses
+    collated_sites_files = []
+    for i in range(len(observation_sites)):
+        tmp_site_files = []
+
+        # Add the name of the site and the observation file address
+        tmp_site_files.append(observation_sites[i])
+        tmp_site_files.append(observation_folder + observation_files[i])
+
+        # Add the JULES file addresses
+        for j in range(len(JULES_run_sites)):
+            if observation_sites[i] in JULES_run_sites[j]:
+                # Add the JULES file address
+                tmp_site_files.append(JULES_run_folders[j]
+                                      + JULES_run_files[j][JULES_run_sites[j].index(observation_sites[i])])
+
+        # Add the site to the collated list if it is available in all the folders
+        if len(tmp_site_files) == len(JULES_run_folders) + 2:
+            collated_sites_files.append(tmp_site_files)
+
 
 if __name__ == "__main__":
     # Define the input folders
