@@ -27,6 +27,16 @@ def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_label
     for file_list in JULES_run_files:
         file_list = [file for file in file_list if file.endswith(".nc")]
 
+    # get a list available sites in each folder
+    # Note the site names are the first part of the file name but the observation files
+    # have a different naming convention.
+    observation_sites = [file.split("_")[0] for file in observation_files]
+    JULES_run_sites = []
+    for file_list in JULES_run_files:
+        JULES_run_sites.append([file.split("-")[0] for file in file_list])
+
+    # change the - to a _ in the observation sites to match the JULES sites
+    observation_sites = [site.replace("-", "_") for site in observation_sites]
 
 
 if __name__ == "__main__":
