@@ -120,7 +120,8 @@ if __name__ == "__main__":
     from datetime import datetime
 
     # Load the JULES output files
-    data_file_paths = ["../../../data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_PMax_run/AT_Neu-JULES_vn7.4-presc0.Stom_opt.nc"]
+    data_file_paths = ["../../../data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_PMax_run/AT_Neu-JULES_vn7.4-presc0.Stom_opt.nc",
+                       "../../../data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_SOX_run/AT_Neu-JULES_vn7.4-presc0.Stom_opt.nc"]
 
     data_files = []
     for path in data_file_paths:
@@ -132,12 +133,12 @@ if __name__ == "__main__":
     observation_file = open_dataset(observation_file_path)
 
     # Plot the flux data
-    plot_flux_data(data_files[0],
+    plot_flux_data(data_files,
                    observation_file,
-                   "Profit Max",
-                   "blue",
+                   ["Profit Max","SOX"],
+                   ["blue","red"],
                    "orange",
-                   "JULES Output",
+                   "AT-Neu",
                    smoothing = 30,
                    x_range = [datetime(2007,1,1), datetime(2013,1,1)])
     plt.show()
