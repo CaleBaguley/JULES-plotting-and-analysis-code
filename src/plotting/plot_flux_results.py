@@ -107,7 +107,8 @@ def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, obser
         data_xarrays[i]["psi_leaf_mean"] = data_xarrays[i]["psi_leaf_pft"].mean(dim= "pft")
 
         plot_col_at_daily_time(data_xarrays[i], "psi_root_zone_mean", "12:00:00",
-                               c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing)
+                               c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing,
+                               linestyle = ":")
         plot_col_at_daily_time(data_xarrays[i], "psi_leaf_mean", "12:00:00",
                                c = data_colours[i], label = labels[i], title = "", axis = axs[2], smoothing = smoothing)
 
