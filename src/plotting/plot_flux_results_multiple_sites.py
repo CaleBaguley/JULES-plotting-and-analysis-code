@@ -8,8 +8,8 @@ from matplotlib import pyplot as plt
 
 from os import listdir
 
-def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels,
-                              smoothing = 30, data_colours = None, observation_colour = None, percentiles = []):
+def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels, output_folder,
+                              smoothing = 30, data_colours = None, observation_colour = None, percentiles = [16., 84.]):
 
     """
     Plot the flux data from a set of JULES outputs for multiple sites.
@@ -77,7 +77,8 @@ def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_label
         plot_flux_data(JULES_data, observation_data, JULES_labels, title=site_files[0],
                        smoothing=smoothing, data_colours=data_colours, observation_colours=observation_colour)
 
-        plt.show()
+        plt.savefig(output_folder + site_files[0] + "_flux_data.png")
+        plt.close()
 
 if __name__ == "__main__":
     # Define the input folders
@@ -87,6 +88,8 @@ if __name__ == "__main__":
                          "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_fsmc_run/"]
     JULES_labels = ["Profit max", "SOX", "JULES"]
 
+    output_folder = "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/figures/"
+
     # Plot the flux data
-    plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels,
+    plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels, output_folder,
                               smoothing = 30, data_colours = ["blue", "red", "green"], observation_colour = "orange")

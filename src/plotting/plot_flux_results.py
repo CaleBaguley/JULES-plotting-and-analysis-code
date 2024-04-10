@@ -9,7 +9,7 @@ from src.plotting.plot_col_at_daily_time import plot_col_at_daily_time
 from src.load_jules_output_file import open_dataset
 
 def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, observation_colours,
-                   title = None, smoothing = None, x_range = None):
+                   title = None, smoothing = None, percentiles = [16.,84.], x_range = None):
 
     """
     Plot the flux data from a set of jules outputs.

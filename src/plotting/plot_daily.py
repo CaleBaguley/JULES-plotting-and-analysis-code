@@ -10,8 +10,9 @@ Plot timeseries data for different daily atributes:
 
 from src.plotting.plot_time_series import plot_time_series
 
-def plot_daily_total(data_xarray, col_key, smoothing = None, x_range = None, c ='blue', label = None, axs = None,
-                     title = None):
+def plot_daily_total(data_xarray, col_key,
+                     smoothing = None, percentile = [16.,84.], x_range = None, c ='blue', label = None,
+                     axs = None, title = None):
     """
     Plot the daily total for a given variable.
 
@@ -33,13 +34,16 @@ def plot_daily_total(data_xarray, col_key, smoothing = None, x_range = None, c =
     data_xarray_daily_total = data_xarray[[col_key]].resample(time="1D").sum()
 
     # Plot the daily total GPP
-    plot_time_series(data_xarray_daily_total, col_key, smoothing = smoothing, x_range = x_range, c = c, label = label,
+    plot_time_series(data_xarray_daily_total, col_key,
+                     smoothing = smoothing, percentile = percentile, x_range = x_range, c = c, label = label,
                      axs = axs, title = title)
 
     return None
 
-def plot_daily_mean(data_xarray, col_key, smoothing = None, x_range = None, c ='blue', label = None, axs = None,
-                    title = None):
+
+def plot_daily_mean(data_xarray, col_key,
+                    smoothing = None, percentile = [16.,84.], x_range = None, c ='blue', label = None,
+                    axs = None, title = None):
     """
     Plot the daily mean for a given variable.
 
@@ -61,13 +65,16 @@ def plot_daily_mean(data_xarray, col_key, smoothing = None, x_range = None, c ='
     data_xarray_daily_total = data_xarray[[col_key]].resample(time="1D").mean()
 
     # Plot the daily total GPP
-    plot_time_series(data_xarray_daily_total, col_key, smoothing = smoothing, x_range = x_range, c = c, label = label,
+    plot_time_series(data_xarray_daily_total, col_key,
+                     smoothing = smoothing, percentile = percentile, x_range = x_range, c = c, label = label,
                      axs = axs, title = title)
 
     return None
 
-def plot_daily_median(data_xarray, col_key, smoothing = None, x_range = None, c ='blue', label = None, axs = None,
-                    title = None):
+
+def plot_daily_median(data_xarray, col_key,
+                      smoothing = None, percentile = [16.,84.], x_range = None, c ='blue', label = None,
+                      axs = None, title = None):
     """
     Plot the daily median for a given variable.
 
@@ -89,13 +96,16 @@ def plot_daily_median(data_xarray, col_key, smoothing = None, x_range = None, c 
     data_xarray_daily_total = data_xarray[[col_key]].resample(time="1D").median()
 
     # Plot the daily total GPP
-    plot_time_series(data_xarray_daily_total, col_key, smoothing = smoothing, x_range = x_range, c = c, label = label,
+    plot_time_series(data_xarray_daily_total, col_key,
+                     smoothing = smoothing, percentile = percentile, x_range = x_range, c = c, label = label,
                      axs = axs, title = title)
 
     return None
 
-def plot_daily_max(data_xarray, col_key, smoothing = None, x_range = None, c ='blue', label = None, axs = None,
-                    title = None):
+
+def plot_daily_max(data_xarray, col_key,
+                   smoothing = None, percentile = [16.,84.], x_range = None, c ='blue', label = None,
+                   axs = None, title = None):
     """
     Plot the daily maximum for a given variable.
 
@@ -117,13 +127,16 @@ def plot_daily_max(data_xarray, col_key, smoothing = None, x_range = None, c ='b
     data_xarray_daily_total = data_xarray[[col_key]].resample(time="1D").max()
 
     # Plot the daily total GPP
-    plot_time_series(data_xarray_daily_total, col_key, smoothing = smoothing, x_range = x_range, c = c, label = label,
+    plot_time_series(data_xarray_daily_total, col_key,
+                     smoothing = smoothing, percentile = percentile, x_range = x_range, c = c, label = label,
                      axs = axs, title = title)
 
     return None
 
-def plot_daily_min(data_xarray, col_key, smoothing = None, x_range = None, c ='blue', label = None, axs = None,
-                    title = None):
+
+def plot_daily_min(data_xarray, col_key,
+                   smoothing = None, percentile = [16.,84.], x_range = None, c ='blue', label = None,
+                   axs = None, title = None):
     """
     Plot the daily minimum for a given variable.
 
@@ -145,13 +158,16 @@ def plot_daily_min(data_xarray, col_key, smoothing = None, x_range = None, c ='b
     data_xarray_daily_total = data_xarray[[col_key]].resample(time="1D").min()
 
     # Plot the daily total GPP
-    plot_time_series(data_xarray_daily_total, col_key, smoothing = smoothing, x_range = x_range, c = c, label = label,
+    plot_time_series(data_xarray_daily_total, col_key,
+                     smoothing = smoothing, percentile = percentile, x_range = x_range, c = c, label = label,
                      axs = axs, title = title)
 
     return None
 
-def plot_daily_std(data_xarray, col_key, smoothing = None, x_range = None, c ='blue', label = None, axs = None,
-                    title = None):
+
+def plot_daily_std(data_xarray, col_key,
+                   smoothing = None, percentile = [16.,84.], x_range = None, c ='blue', label = None,
+                   axs = None, title = None):
     """
     Plot the daily standard deviation for a given variable.
 
@@ -173,7 +189,8 @@ def plot_daily_std(data_xarray, col_key, smoothing = None, x_range = None, c ='b
     data_xarray_daily_total = data_xarray[[col_key]].resample(time="1D").std()
 
     # Plot the daily total GPP
-    plot_time_series(data_xarray_daily_total, col_key, smoothing = smoothing, x_range = x_range, c = c, label = label,
+    plot_time_series(data_xarray_daily_total, col_key,
+                     smoothing = smoothing, percentile = percentile, x_range = x_range, c = c, label = label,
                      axs = axs, title = title)
 
     return None
