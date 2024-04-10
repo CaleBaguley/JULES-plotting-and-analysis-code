@@ -6,7 +6,8 @@ from src.plotting.plot_flux_results import plot_flux_data
 from src.load_jules_output_file import open_dataset
 from matplotlib import pyplot as plt
 
-from os import listdir
+from os import listdir, makedirs
+from os.path import exists
 
 def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels, output_folder,
                               smoothing = 30, data_colours = None, observation_colour = None, percentiles = [16., 84.]):
@@ -77,7 +78,12 @@ def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_label
         plot_flux_data(JULES_data, observation_data, JULES_labels, title=site_files[0],
                        smoothing=smoothing, data_colours=data_colours, observation_colours=observation_colour)
 
-        plt.savefig(output_folder + site_files[0] + "_flux_data.png")
+        # -- Save the plot --
+        # Check the output folder for this site exists
+        if(not exists(output_folder + site_files[0] + "/")):
+            makedirs(output_folder + site_files[0] + "/")
+
+        plt.savefig(output_folder + site_files[0] + "/" + site_files[0] + "_flux_data.png")
         plt.close()
 
 if __name__ == "__main__":
