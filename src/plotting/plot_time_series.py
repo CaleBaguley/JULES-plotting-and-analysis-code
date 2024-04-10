@@ -14,7 +14,7 @@ def plot_time_series(data_xarray, col_key, smoothing=None, percentiles = [16., 8
     data_xarray (xarray.Dataset): The input xarray dataset.
     col_key (str): The key for the GPP variable.
     smoothing (int): The number of days to smooth the data by.
-    x_range (list): The range of dates to plot, in the form [date].
+    x_range (list): The range of dates to plot, in the form [min datetime, max datetime].
     c (str): The color to plot the data.
     label (str): The label for the date in the plot's legend.
     axis (plt.axis): The axis to plot the data on.
