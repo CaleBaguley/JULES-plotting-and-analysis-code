@@ -16,7 +16,8 @@ def plot_col_at_daily_time(data_xarray,
                            c ='blue',
                            label = None,
                            axis = None,
-                           title = None):
+                           title = None,
+                           linestyle = '-'):
 
     """
     Plot the value of some input column at a given time of each day.
@@ -43,6 +44,6 @@ def plot_col_at_daily_time(data_xarray,
     # Plot the daily values
     plot_time_series(data_xarray_daily, variable_key,
                      smoothing = smoothing, percentiles = percentiles, x_range = x_range, c = c, label = label,
-                     axs = axis, title = title)
+                     axs = axis, title = title, linestyle = linestyle)
 
     return None

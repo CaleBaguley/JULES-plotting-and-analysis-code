@@ -6,7 +6,15 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 
 
-def plot_time_series(data_xarray, col_key, smoothing=None, percentiles = [16., 84.], x_range=None, c='blue', label=None, axs=None, title=None):
+def plot_time_series(data_xarray, col_key,
+                     smoothing=None,
+                     percentiles = [16., 84.],
+                     x_range=None,
+                     c='blue',
+                     label=None,
+                     axs=None,
+                     title=None,
+                     linestyle='-'):
     """
     Plot the daily total for a given variable.
 
@@ -44,16 +52,16 @@ def plot_time_series(data_xarray, col_key, smoothing=None, percentiles = [16., 8
 
     if (smoothing == None):
         # Plot the daily GPP for all sites
-        data_xarray_tmp[col_key].plot(color=c, label=label, ax=axs)
+        data_xarray_tmp[col_key].plot(color=c, label=label, ax=axs, linestyle=linestyle)
     else:
         # Plot the daily GPP for all sites
-        data_xarray_tmp['median'].plot(color=c, label=label, ax=axs)
+        data_xarray_tmp['median'].plot(color=c, label=label, ax=axs, linestyle=linestyle)
 
         # Fill the area between the input confidence intervals
         axs.fill_between(data_xarray_tmp['time'].values,
                          data_xarray_tmp['lower'].values[:, 0, 0],
                          data_xarray_tmp['upper'].values[:, 0, 0],
-                         alpha=0.5, color=c)
+                         alpha=0.3, color=c, linestyle = linestyle)
 
     # Set the x-axis range
     if (x_range != None):
