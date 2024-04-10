@@ -3,15 +3,21 @@ Plotting script to plot the results of the flux analysis for multiple sites.
 """
 
 from src.plotting.plot_flux_results import plot_flux_data
+from src.load_jules_output_file import open_dataset
+from matplotlib import pyplot as plt
 
 from os import listdir
 
-def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels):
+def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels,
+                              smoothing = 30, data_colours = None, observation_colour = None, percentiles = []):
 
     """
     Plot the flux data from a set of JULES outputs for multiple sites.
     :param observation_folder: Folder containing the observational data files. String.
     :param JULES_run_folders: Folders containing the JULES output files. List of strings.
+    :param JULES_labels: Labels for the JULES output files. List of strings.
+    :param data_colours: Colours to plot the JULES output files in. List of strings.
+    :param observation_colour: Colour to plot the observational data in. String.
     :return:
     """
 
@@ -58,13 +64,29 @@ def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_label
         if len(tmp_site_files) == len(JULES_run_folders) + 2:
             collated_sites_files.append(tmp_site_files)
 
+    # -- Plot the flux data --
+    # Loop through the sites and plot the flux data
+    for site_files in collated_sites_files:
+        # Load the data
+        observation_data = open_dataset(site_files[1])
+        JULES_data = []
+        for i in range(2, len(site_files)):
+            JULES_data.append(open_dataset(site_files[i]))
+
+        # Plot the flux data
+        plot_flux_data(JULES_data, observation_data, JULES_labels, title=site_files[0],
+                       smoothing=smoothing, data_colours=data_colours, observation_colours=observation_colour)
+
+        plt.show()
 
 if __name__ == "__main__":
     # Define the input folders
     observation_folder = "../../../../../Desktop/Flux_data/Plumber2_catalogue_data/Flux/"
     JULES_run_folders = ["../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_PMax_run/",
-                         "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_SOX_run/"]
-    JULES_labels = ["Profit max", "SOX"]
+                         "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_SOX_run/",
+                         "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_fsmc_run/"]
+    JULES_labels = ["Profit max", "SOX", "JULES"]
 
     # Plot the flux data
-    plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels)
+    plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels,
+                              smoothing = 30, data_colours = ["blue", "red", "green"], observation_colour = "orange")
