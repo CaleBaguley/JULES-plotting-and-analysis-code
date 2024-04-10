@@ -62,11 +62,14 @@ def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, obser
 
     # --- Figure setup ---
     # Create figure with multiple subplots.
-    fig, axs = plt.subplots(3, 1, figsize=(8, 5), sharex=True)
+    fig, axs = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
+
+    # Change padding around figure
+    plt.margins(0.05)
 
     # Set the title of the plot
     if(title != None):
-        fig.suptitle(title)
+        fig.suptitle(title, y = 0.93, fontsize = "xx-large", fontweight = "bold")
 
     # Remove vertical spacing between subplots
     plt.subplots_adjust(hspace=0.)
