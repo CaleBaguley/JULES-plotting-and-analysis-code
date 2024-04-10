@@ -4,10 +4,11 @@ Plotting script to plot the results of the flux analysis for multiple sites.
 
 from src.plotting.plot_flux_results import plot_flux_data
 from src.load_jules_output_file import open_dataset
-from matplotlib import pyplot as plt
 
+from matplotlib import pyplot as plt
 from os import listdir, makedirs
 from os.path import exists
+from datetime import date
 
 def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels, output_folder,
                               smoothing = 30, data_colours = None, observation_colour = None, percentiles = [16., 84.]):
@@ -68,22 +69,65 @@ def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_label
     # -- Plot the flux data --
     # Loop through the sites and plot the flux data
     for site_files in collated_sites_files:
+
+        print("Plotting flux data for site: " + site_files[0])
+
         # Load the data
         observation_data = open_dataset(site_files[1])
         JULES_data = []
         for i in range(2, len(site_files)):
             JULES_data.append(open_dataset(site_files[i]))
 
+        # -- identify overlapping time periods --
+        # Find the start and end dates for the data
+        start_dates = [data.time.values[0] for data in JULES_data]
+        start_dates.append(observation_data.time.values[0])
+
+        end_dates = [data.time.values[-1] for data in JULES_data]
+        end_dates.append(observation_data.time.values[-1])
+
+        # Find the latest start date and the earliest end date
+        start_date = max(start_dates)
+        end_date = min(end_dates)
+
+        # Convert the start and end dates to datetime objects
+        start_date = date.fromisoformat(str(start_date)[:10])
+        end_date = date.fromisoformat(str(end_date)[:10])
+
+        # Round the start_date down to the nearest year and the end_date up to the nearest year
+        start_date = date(start_date.year, 1, 1)
+        end_date = date(end_date.year + 1, 1, 1)
+
+        # Calculate the number of years between the start and end dates
+        num_years = end_date.year - start_date.year
+
         # Plot the flux data
         plot_flux_data(JULES_data, observation_data, JULES_labels, title=site_files[0],
-                       smoothing=smoothing, data_colours=data_colours, observation_colours=observation_colour)
+                       smoothing=smoothing, data_colours=data_colours, observation_colours=observation_colour,
+                       x_range=[start_date, end_date], percentiles=percentiles)
 
         # -- Save the plot --
-        # Check the output folder for this site exists
+        # Check the output folder for this site exists. If not create it.
         if(not exists(output_folder + site_files[0] + "/")):
             makedirs(output_folder + site_files[0] + "/")
 
+        # Save the entire time series plot
         plt.savefig(output_folder + site_files[0] + "/" + site_files[0] + "_flux_data.png")
+
+        # If there are more than 3 years of data plot each set of 3 years separately
+        if(num_years > 3):
+            for i in range(0, num_years-2):
+                # Calculate the start and end dates for this plot
+                start_date_plot = date(start_date.year + i, 1, 1)
+                end_date_plot = date(start_date.year + i + 3, 1, 1)
+
+                # change the x_range to the new start and end dates
+                plt.xlim(start_date_plot, end_date_plot)
+
+                # Save the plot
+                file_name = site_files[0] + "_flux_data_" + str(start_date_plot.year) + "_" + str(end_date_plot.year) + ".png"
+                plt.savefig(output_folder + site_files[0] + "/" + file_name)
+
         plt.close()
 
 if __name__ == "__main__":
