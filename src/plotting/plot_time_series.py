@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 
 
-def plot_time_series(data_xarray, col_key, smoothing=None, percentile = [16.,84.], x_range=None, c='blue', label=None, axs=None, title=None):
+def plot_time_series(data_xarray, col_key, smoothing=None, percentiles = [16.,84.], x_range=None, c='blue', label=None, axs=None, title=None):
     """
     Plot the daily total for a given variable.
 
@@ -33,9 +33,9 @@ def plot_time_series(data_xarray, col_key, smoothing=None, percentile = [16.,84.
         data_xarray_tmp['median'] = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
                                      .construct('tmp').quantile(.50, dim='tmp'))
         data_xarray_tmp['lower']  = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
-                                     .construct('tmp').quantile(1-percentile[0]/100., dim='tmp'))
+                                     .construct('tmp').quantile(1-percentiles[0]/100., dim='tmp'))
         data_xarray_tmp['upper']  = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
-                                     .construct('tmp').quantile(1-percentile[0]/100., dim='tmp'))
+                                     .construct('tmp').quantile(1-percentiles[0]/100., dim='tmp'))
 
     # Create a new figure and set axs if there is no input axis
     if (axs == None):
