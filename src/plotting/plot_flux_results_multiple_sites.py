@@ -68,9 +68,10 @@ def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_label
 
     # -- Plot the flux data --
     # Loop through the sites and plot the flux data
+    itter = 1
     for site_files in collated_sites_files:
 
-        print("Plotting flux data for site: " + site_files[0])
+        print("Plotting flux data for site: " + site_files[0] + " (" + str(itter) + "/" + str(len(collated_sites_files)) + ")")
 
         # Load the data
         observation_data = open_dataset(site_files[1])
@@ -129,6 +130,8 @@ def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_label
                 plt.savefig(output_folder + site_files[0] + "/" + file_name)
 
         plt.close()
+
+        itter += 1
 
 if __name__ == "__main__":
     # Define the input folders
