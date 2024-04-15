@@ -12,8 +12,8 @@ from src.plotting.plot_time_series import plot_time_series
 
 
 def plot_daily_total(data_xarray, col_key,
-                     smoothing = None, percentiles = [16.,84.], x_range = None, c ='blue', label = None,
-                     axs = None, title = None, linestyle = '-'):
+                     smoothing = None, smoothing_type = 'mean', percentiles = None, x_range = None, c ='blue',
+                     label = None, axs = None, title = None, linestyle = '-'):
     """
     Plot the daily total for a given variable.
 
@@ -21,6 +21,7 @@ def plot_daily_total(data_xarray, col_key,
     data_xarray (xarray.Dataset): The input xarray dataset.
     col_key (str): The key for the GPP variable.
     smoothing (int): The number of days to smooth the data by.
+    smoothing_type (str): The type of smoothing to apply to the data. 'mean' or 'median'.
     x_range (list): The range of dates to plot, in the form [date].
     c (str): The color to plot the data.
     label (str): The label for the date in the plot's legend.
@@ -36,14 +37,14 @@ def plot_daily_total(data_xarray, col_key,
 
     # Plot the daily total GPP
     plot_time_series(data_xarray_daily_total, col_key,
-                     smoothing = smoothing, percentiles = percentiles, x_range = x_range, c = c, label = label,
-                     axs = axs, title = title, linestyle = linestyle)
+                     smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
+                     x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle)
 
     return None
 
 
 def plot_daily_mean(data_xarray, col_key,
-                    smoothing = None, percentiles = [16.,84.], x_range = None, c ='blue', label = None,
+                    smoothing = None, smoothing_type = 'mean', percentiles = None, x_range = None, c ='blue', label = None,
                     axs = None, title = None, linestyle = '-'):
     """
     Plot the daily mean for a given variable.
@@ -52,6 +53,7 @@ def plot_daily_mean(data_xarray, col_key,
     data_xarray (xarray.Dataset): The input xarray dataset.
     col_key (str): The key for the GPP variable.
     smoothing (int): The number of days to smooth the data by.
+    smoothing_type (str): The type of smoothing to apply to the data. 'mean' or 'median'.
     x_range (list): The range of dates to plot, in the form [date].
     c (str): The color to plot the data.
     label (str): The label for the date in the plot's legend.
@@ -67,14 +69,14 @@ def plot_daily_mean(data_xarray, col_key,
 
     # Plot the daily total GPP
     plot_time_series(data_xarray_daily_total, col_key,
-                     smoothing = smoothing, percentiles = percentiles, x_range = x_range, c = c, label = label,
-                     axs = axs, title = title, linestyle = linestyle)
+                     smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
+                     x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle)
 
     return None
 
 
 def plot_daily_median(data_xarray, col_key,
-                      smoothing = None, percentiles = [16.,84.], x_range = None, c ='blue', label = None,
+                      smoothing = None, smoothing_type = 'mean', percentiles = None, x_range = None, c ='blue', label = None,
                       axs = None, title = None, linestyle = '-'):
     """
     Plot the daily median for a given variable.
@@ -83,6 +85,7 @@ def plot_daily_median(data_xarray, col_key,
     data_xarray (xarray.Dataset): The input xarray dataset.
     col_key (str): The key for the GPP variable.
     smoothing (int): The number of days to smooth the data by.
+    smoothing_type (str): The type of smoothing to apply to the data. 'mean' or 'median'.
     x_range (list): The range of dates to plot, in the form [date].
     c (str): The color to plot the data.
     label (str): The label for the date in the plot's legend.
@@ -98,14 +101,14 @@ def plot_daily_median(data_xarray, col_key,
 
     # Plot the daily total GPP
     plot_time_series(data_xarray_daily_total, col_key,
-                     smoothing = smoothing, percentiles = percentiles, x_range = x_range, c = c, label = label,
-                     axs = axs, title = title, linestyle = linestyle)
+                     smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
+                     x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle)
 
     return None
 
 
 def plot_daily_max(data_xarray, col_key,
-                   smoothing = None, percentiles = [16.,84.], x_range = None, c ='blue', label = None,
+                   smoothing = None, smoothing_type = 'mean', percentiles = None, x_range = None, c ='blue', label = None,
                    axs = None, title = None, linestyle = '-'):
     """
     Plot the daily maximum for a given variable.
@@ -114,6 +117,7 @@ def plot_daily_max(data_xarray, col_key,
     data_xarray (xarray.Dataset): The input xarray dataset.
     col_key (str): The key for the GPP variable.
     smoothing (int): The number of days to smooth the data by.
+    smoothing_type (str): The type of smoothing to apply to the data. 'mean' or 'median'.
     x_range (list): The range of dates to plot, in the form [date].
     c (str): The color to plot the data.
     label (str): The label for the date in the plot's legend.
@@ -129,14 +133,14 @@ def plot_daily_max(data_xarray, col_key,
 
     # Plot the daily total GPP
     plot_time_series(data_xarray_daily_total, col_key,
-                     smoothing = smoothing, percentiles = percentiles, x_range = x_range, c = c, label = label,
-                     axs = axs, title = title, linestyle = linestyle)
+                     smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
+                     x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle)
 
     return None
 
 
 def plot_daily_min(data_xarray, col_key,
-                   smoothing = None, percentiles = [16.,84.], x_range = None, c ='blue', label = None,
+                   smoothing = None, smoothing_type = 'mean', percentiles = None, x_range = None, c ='blue', label = None,
                    axs = None, title = None, linestyle = '-'):
     """
     Plot the daily minimum for a given variable.
@@ -145,6 +149,7 @@ def plot_daily_min(data_xarray, col_key,
     data_xarray (xarray.Dataset): The input xarray dataset.
     col_key (str): The key for the GPP variable.
     smoothing (int): The number of days to smooth the data by.
+    smoothing_type (str): The type of smoothing to apply to the data. 'mean' or 'median'.
     x_range (list): The range of dates to plot, in the form [date].
     c (str): The color to plot the data.
     label (str): The label for the date in the plot's legend.
@@ -160,14 +165,14 @@ def plot_daily_min(data_xarray, col_key,
 
     # Plot the daily total GPP
     plot_time_series(data_xarray_daily_total, col_key,
-                     smoothing = smoothing, percentiles = percentiles, x_range = x_range, c = c, label = label,
-                     axs = axs, title = title, linestyle = linestyle)
+                     smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
+                     x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle)
 
     return None
 
 
 def plot_daily_std(data_xarray, col_key,
-                   smoothing = None, percentiles = [16.,84.], x_range = None, c ='blue', label = None,
+                   smoothing = None, smoothing_type = 'mean', percentiles = None, x_range = None, c ='blue', label = None,
                    axs = None, title = None, linestyle = '-'):
     """
     Plot the daily standard deviation for a given variable.
@@ -176,6 +181,7 @@ def plot_daily_std(data_xarray, col_key,
     data_xarray (xarray.Dataset): The input xarray dataset.
     col_key (str): The key for the GPP variable.
     smoothing (int): The number of days to smooth the data by.
+    smoothing_type (str): The type of smoothing to apply to the data. 'mean' or 'median'.
     x_range (list): The range of dates to plot, in the form [date].
     c (str): The color to plot the data.
     label (str): The label for the date in the plot's legend.
@@ -191,7 +197,7 @@ def plot_daily_std(data_xarray, col_key,
 
     # Plot the daily total GPP
     plot_time_series(data_xarray_daily_total, col_key,
-                     smoothing = smoothing, percentiles = percentiles, x_range = x_range, c = c, label = label,
-                     axs = axs, title = title, linestyle = linestyle)
+                     smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
+                     x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle)
 
     return None

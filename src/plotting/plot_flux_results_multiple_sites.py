@@ -10,16 +10,23 @@ from os import listdir, makedirs
 from os.path import exists
 from datetime import date
 
-def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels, output_folder,
-                              smoothing = 30, data_colours = None, observation_colour = None, percentiles = [16., 84.]):
+def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels, output_folder, stress_indicator,
+                              smoothing = 30, smoothing_type = 'mean', data_colours = None,
+                              observation_colour = None, percentiles = None):
 
     """
     Plot the flux data from a set of JULES outputs for multiple sites.
     :param observation_folder: Folder containing the observational data files. String.
     :param JULES_run_folders: Folders containing the JULES output files. List of strings.
     :param JULES_labels: Labels for the JULES output files. List of strings.
+    :param output_folder: Folder to save the output plots in. String.
+    :param stress_indicator: Type of stress indicator to plot for each JULES run.
+                             'wp' water potential or 'beta' JULES beta. List of strings.
+    :param smoothing: Number of days to smooth the data by. Integer.
+    :param smoothing_type: Type of smoothing to apply to the data. 'mean' or 'median'. String.
     :param data_colours: Colours to plot the JULES output files in. List of strings.
     :param observation_colour: Colour to plot the observational data in. String.
+    :param percentiles: Percentiles to plot the data with. List of floats.
     :return:
     """
 
@@ -104,8 +111,9 @@ def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_label
 
         # Plot the flux data
         plot_flux_data(JULES_data, observation_data, JULES_labels, title=site_files[0],
-                       smoothing=smoothing, data_colours=data_colours, observation_colours=observation_colour,
-                       x_range=[start_date, end_date], percentiles=percentiles)
+                       smoothing = smoothing, smoothing_type = smoothing_type, data_colours = data_colours,
+                       observation_colours = observation_colour, stress_indicator = stress_indicator,
+                       x_range = [start_date, end_date], percentiles = percentiles)
 
         # -- Save the plot --
         # Check the output folder for this site exists. If not create it.
@@ -140,9 +148,11 @@ if __name__ == "__main__":
                          "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_SOX_run/",
                          "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_fsmc_run/"]
     JULES_labels = ["Profit max", "SOX", "JULES"]
+    stress_indicator = ["wp", "wp", "beta"]
 
     output_folder = "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/figures/"
 
     # Plot the flux data
-    plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels, output_folder,
-                              smoothing = 30, data_colours = ["blue", "red", "green"], observation_colour = "orange")
+    plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels, output_folder, stress_indicator,
+                              smoothing = 5, smoothing_type='median', data_colours = ["blue", "red", "green"],
+                              observation_colour = "orange")

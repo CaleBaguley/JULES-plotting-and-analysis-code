@@ -11,7 +11,8 @@ def plot_col_at_daily_time(data_xarray,
                            variable_key,
                            time,
                            smoothing = None,
-                           percentiles = [16.,84.],
+                           smoothing_type = 'mean',
+                           percentiles = None,
                            x_range = None,
                            c ='blue',
                            label = None,
@@ -28,6 +29,7 @@ def plot_col_at_daily_time(data_xarray,
     time (str): The time to plot the column at, in the form "HH:MM:SS".
     smoothing (int): The number of days to smooth the data by.
                      If None then no smoothing is applied.
+    smoothing_type (str): The type of smoothing to apply to the data. 'mean' or 'median'.
     x_range (list): The range of dates to plot, in the form [datetime.date].
     c (str): The color to plot the data.
     label (str): The label for the date in the plot's legend.
@@ -43,7 +45,7 @@ def plot_col_at_daily_time(data_xarray,
 
     # Plot the daily values
     plot_time_series(data_xarray_daily, variable_key,
-                     smoothing = smoothing, percentiles = percentiles, x_range = x_range, c = c, label = label,
-                     axs = axis, title = title, linestyle = linestyle)
+                     smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
+                     x_range = x_range, c = c, label = label, axs = axis, title = title, linestyle = linestyle)
 
     return None

@@ -8,8 +8,9 @@ from src.plotting.plot_daily import plot_daily_total, plot_daily_mean
 from src.plotting.plot_col_at_daily_time import plot_col_at_daily_time
 from src.load_jules_output_file import open_dataset
 
-def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, observation_colours,
-                   title = None, smoothing = None, percentiles = [16.,84.], x_range = None):
+
+def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, observation_colours, stress_indicator,
+                   title = None, smoothing = None, smoothing_type = 'mean', percentiles = None, x_range = None):
 
     """
     Plot the flux data from a set of jules outputs.
@@ -18,6 +19,8 @@ def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, obser
     :param labels: The labels to plot the data with. String or list of strings.
     :param data_colours: The colours to plot the data in. String or list of strings.
     :param observation_colours: The colours to plot the observational data in. String.
+    :param stress_indicator: The stress indicator to plot. 'wp' water potential or 'beta' JULES fsmc value.
+                             List of String.
     :param title: The title of the plot. String.
     :return: None
     """
@@ -80,11 +83,13 @@ def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, obser
     # ---- Plot the GPP data ----
     for i in range(len(data_xarrays)):
         plot_daily_total(data_xarrays[i], "gpp_gb", c = data_colours[i], label = labels[i], axs = axs[0],
-                         title = "", smoothing = smoothing, x_range = x_range)
+                         title = "", smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
+                         x_range = x_range)
 
     # Plot the observational data
     plot_daily_total(observation_xarray, "GPP", c=observation_colours, label="Observation", axs=axs[0],
-                     title="", smoothing=smoothing, x_range=x_range)
+                     title="", smoothing=smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
+                     x_range=x_range)
 
     # set the y-axis label
     axs[0].set_ylabel("GPP (gC m-2 day-1)")
@@ -92,26 +97,36 @@ def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, obser
     # ---- Plot the latent heat data ----
     for i in range(len(data_xarrays)):
         plot_daily_mean(data_xarrays[i], "latent_heat", c = data_colours[i], label = labels[i], axs = axs[1],
-                        title = "", smoothing = smoothing, x_range = x_range)
+                        title = "", smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
+                        x_range = x_range)
 
     plot_daily_mean(observation_xarray, "Qle", c=observation_colours, label="Observation", axs=axs[1],
-                    title="", smoothing=smoothing, x_range=x_range)
+                    title="", smoothing=smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
+                    x_range=x_range)
 
     # set the y-axis label
     axs[1].set_ylabel("Latent Heat (W m-2)")
 
-
-    # ---- Plot the leaf water potential data ----
+    # ---- Plot the stress indicator ----
     for i in range(len(data_xarrays)):
-        data_xarrays[i]["psi_root_zone_mean"] = data_xarrays[i]["psi_root_zone_pft"].mean(dim= "pft")
-        data_xarrays[i]["psi_leaf_mean"] = data_xarrays[i]["psi_leaf_pft"].mean(dim= "pft")
+        if(stress_indicator[i] == "wp"):
+            # Calculate the mean leaf and root zone water potential over plant functional types
+            data_xarrays[i]["psi_root_zone_mean"] = data_xarrays[i]["psi_root_zone_pft"].mean(dim= "pft")
+            data_xarrays[i]["psi_leaf_mean"] = data_xarrays[i]["psi_leaf_pft"].mean(dim= "pft")
 
-        plot_col_at_daily_time(data_xarrays[i], "psi_root_zone_mean", "12:00:00",
-                               c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing,
-                               linestyle = ":")
-        plot_col_at_daily_time(data_xarrays[i], "psi_leaf_mean", "12:00:00",
-                               c = data_colours[i], label = labels[i], title = "", axis = axs[2], smoothing = smoothing)
+            plot_col_at_daily_time(data_xarrays[i], "psi_root_zone_mean", "12:00:00",
+                                   c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing,
+                                   smoothing_type = smoothing_type, percentiles = percentiles, linestyle = ":")
+            plot_col_at_daily_time(data_xarrays[i], "psi_leaf_mean", "12:00:00",
+                                   c = data_colours[i], label = labels[i], title = "", axis = axs[2],
+                                   smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
+                                   linestyle = "-")
 
+        elif(stress_indicator[i] == "beta"):
+            # Calculate the mean leaf and root zone fsmc value (beta) over plant functional types
+            plot_col_at_daily_time(data_xarrays[i], "fsmc_gb", "12:00:00",
+                                   c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing,
+                                   smoothing_type=smoothing_type, percentiles=percentiles, linestyle="--")
 
     # set the y-axis label
     axs[2].set_ylabel("Leaf Water Potential (MPa)")
@@ -139,10 +154,12 @@ if __name__ == "__main__":
     # Plot the flux data
     plot_flux_data(data_files,
                    observation_file,
-                   ["Profit Max","SOX"],
-                   ["blue","red"],
-                   "orange",
-                   "AT-Neu",
-                   smoothing = 30,
+                   labels = ["Profit Max","SOX"],
+                   data_colours = ["blue","red"],
+                   observation_colours = "orange",
+                   stress_indicator = ["wp", "wp"],
+                   title = "AT-Neu",
+                   smoothing = 5,
+                   smoothing_type = 'median',
                    x_range = [datetime(2007,1,1), datetime(2013,1,1)])
     plt.show()

@@ -8,7 +8,8 @@ from datetime import datetime
 
 def plot_time_series(data_xarray, col_key,
                      smoothing=None,
-                     percentiles = [16., 84.],
+                     smoothing_type='mean',
+                     percentiles = None,
                      x_range=None,
                      c='blue',
                      label=None,
@@ -22,6 +23,7 @@ def plot_time_series(data_xarray, col_key,
     data_xarray (xarray.Dataset): The input xarray dataset.
     col_key (str): The key for the GPP variable.
     smoothing (int): The number of days to smooth the data by.
+    smoothing_type (str): The type of smoothing to apply to the data. 'mean' or 'median'.
     x_range (list): The range of dates to plot, in the form [min datetime, max datetime].
     c (str): The color to plot the data.
     label (str): The label for the date in the plot's legend.
@@ -37,13 +39,22 @@ def plot_time_series(data_xarray, col_key,
 
     # Smooth the data if a smoothing range is given
     if (smoothing != None):
-        # Calculate median and 95% confidence intervals from the daily total GPP
-        data_xarray_tmp['median'] = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
-                                     .construct('tmp').quantile(.50, dim='tmp'))
-        data_xarray_tmp['lower']  = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
-                                     .construct('tmp').quantile(1-percentiles[0]/100., dim='tmp'))
-        data_xarray_tmp['upper']  = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
-                                     .construct('tmp').quantile(1-percentiles[1]/100., dim='tmp'))
+        if(smoothing_type == 'mean'):
+            # Calculate mean from the daily total GPP
+            data_xarray_tmp['mean'] = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
+                                         .construct('tmp').mean())
+        elif(smoothing_type == 'median'):
+            # Calculate median and confidence intervals from the daily total GPP
+            data_xarray_tmp['median'] = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
+                                         .construct('tmp').quantile(.50, dim='tmp'))
+
+            if(percentiles != None):
+                data_xarray_tmp['lower']  = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
+                                             .construct('tmp').quantile(1-percentiles[0]/100., dim='tmp'))
+                data_xarray_tmp['upper']  = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
+                                             .construct('tmp').quantile(1-percentiles[1]/100., dim='tmp'))
+        else:
+            raise ValueError("The input smoothing_type must be either 'mean' or 'median'.")
 
     # Create a new figure and set axs if there is no input axis
     if (axs == None):
@@ -54,14 +65,19 @@ def plot_time_series(data_xarray, col_key,
         # Plot the daily GPP for all sites
         data_xarray_tmp[col_key].plot(color=c, label=label, ax=axs, linestyle=linestyle)
     else:
-        # Plot the daily GPP for all sites
-        data_xarray_tmp['median'].plot(color=c, label=label, ax=axs, linestyle=linestyle)
+        if(smoothing_type == 'mean'):
+            # Plot the daily GPP for all sites
+            data_xarray_tmp['mean'].plot(color=c, label=label, ax=axs, linestyle=linestyle)
+        elif(smoothing_type == 'median'):
+            # Plot the daily GPP for all sites
+            data_xarray_tmp['median'].plot(color=c, label=label, ax=axs, linestyle=linestyle)
 
-        # Fill the area between the input confidence intervals
-        axs.fill_between(data_xarray_tmp['time'].values,
-                         data_xarray_tmp['lower'].values[:, 0, 0],
-                         data_xarray_tmp['upper'].values[:, 0, 0],
-                         alpha=0.3, color=c, linestyle = linestyle)
+            if(percentiles != None):
+                # Fill the area between the input confidence intervals
+                axs.fill_between(data_xarray_tmp['time'].values,
+                                 data_xarray_tmp['lower'].values[:, 0, 0],
+                                 data_xarray_tmp['upper'].values[:, 0, 0],
+                                 alpha=0.3, color=c, linestyle = linestyle)
 
     # Set the x-axis range
     if (x_range != None):
