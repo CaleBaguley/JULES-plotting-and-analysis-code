@@ -41,8 +41,7 @@ def plot_time_series(data_xarray, col_key,
     if (smoothing != None):
         if(smoothing_type == 'mean'):
             # Calculate mean from the daily total GPP
-            data_xarray_tmp['mean'] = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
-                                         .construct('tmp').mean())
+            data_xarray_tmp['mean'] = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True).mean())
         elif(smoothing_type == 'median'):
             # Calculate median and confidence intervals from the daily total GPP
             data_xarray_tmp['median'] = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
