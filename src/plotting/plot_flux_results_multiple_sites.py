@@ -144,15 +144,21 @@ def plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_label
 if __name__ == "__main__":
     # Define the input folders
     observation_folder = "../../../../../Desktop/Flux_data/Plumber2_catalogue_data/Flux/"
-    JULES_run_folders = ["../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_PMax_run/",
-                         "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_SOX_run/",
-                         "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_fsmc_run/"]
-    JULES_labels = ["Profit max", "SOX", "JULES"]
-    stress_indicator = ["wp", "wp", "beta"]
+    #JULES_run_folders = ["../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_PMax_run/",
+    #                     "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_SOX_run/",
+    #                     "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_fsmc_run/",
+    #                     "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_root_weighted_run/"]
+    #JULES_labels = ["Profit max", "SOX", "JULES", "JULES root weighted"]
+    #stress_indicator = ["wp", "wp", "beta", "beta"]
+
+    JULES_run_folders = ["../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_fsmc_run/",
+                         "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/JULES_root_weighted_run/"]
+    JULES_labels = ["JULES soil root conductance", "JULES root weighted"]
+    stress_indicator = ["beta", "beta"]
 
     output_folder = "../../../../../Desktop/JULES/data/data_runs/stomatal_optimisation_runs/plumber2_runs/figures/"
 
     # Plot the flux data
     plot_multi_site_flux_data(observation_folder, JULES_run_folders, JULES_labels, output_folder, stress_indicator,
-                              smoothing = 5, smoothing_type='median', data_colours = ["blue", "red", "green"],
+                              smoothing = 5, smoothing_type='mean', data_colours = ["blue", "red", "green", "purple"],
                               observation_colour = "orange")

@@ -160,6 +160,6 @@ if __name__ == "__main__":
                    stress_indicator = ["wp", "wp"],
                    title = "AT-Neu",
                    smoothing = 5,
-                   smoothing_type = 'median',
+                   smoothing_type = 'mean',
                    x_range = [datetime(2007,1,1), datetime(2013,1,1)])
     plt.show()
