@@ -2,8 +2,8 @@
 Plotting script to plot the results of the flux analysis for multiple sites.
 """
 
-from src.plotting.plot_flux_results import plot_flux_data
-from src.load_jules_output_file import open_dataset
+from JULES_Plotting_and_Analysis.src.plotting.plot_flux_results import plot_flux_data
+from JULES_Plotting_and_Analysis.src.load_jules_output_file import open_dataset
 
 from matplotlib import pyplot as plt
 from os import listdir, makedirs

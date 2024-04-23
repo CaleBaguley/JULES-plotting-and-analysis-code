@@ -2,10 +2,9 @@
 The function to plot the value of some input column at a given time of each day.
 """
 
-from src.data_conversions.to_daily_value import get_daily_values_at_time
-from src.plotting.plot_time_series import plot_time_series
-import matplotlib.pyplot as plt
-from datetime import datetime
+from JULES_Plotting_and_Analysis.src.data_conversions.to_daily_value import get_daily_values_at_time
+from JULES_Plotting_and_Analysis.src.plotting.plot_time_series import plot_time_series
+
 
 def plot_col_at_daily_time(data_xarray,
                            variable_key,

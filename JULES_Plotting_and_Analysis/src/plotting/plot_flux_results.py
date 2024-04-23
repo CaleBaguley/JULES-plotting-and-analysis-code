@@ -4,9 +4,9 @@ Plot the flux data from a set of jules outputs.
 
 import xarray
 import matplotlib.pyplot as plt
-from src.plotting.plot_daily import plot_daily_total, plot_daily_mean
-from src.plotting.plot_col_at_daily_time import plot_col_at_daily_time
-from src.load_jules_output_file import open_dataset
+from JULES_Plotting_and_Analysis.src.plotting.plot_daily import plot_daily_total, plot_daily_mean
+from JULES_Plotting_and_Analysis.src.plotting.plot_col_at_daily_time import plot_col_at_daily_time
+from JULES_Plotting_and_Analysis.src.load_jules_output_file import open_dataset
 
 
 def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, observation_colours, stress_indicator,

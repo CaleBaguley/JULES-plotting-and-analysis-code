@@ -8,7 +8,7 @@ Plot timeseries data for different daily atributes:
 - Standard deviation
 """
 
-from src.plotting.plot_time_series import plot_time_series
+from JULES_Plotting_and_Analysis.src.plotting.plot_time_series import plot_time_series
 
 
 def plot_daily_total(data_xarray, col_key,
