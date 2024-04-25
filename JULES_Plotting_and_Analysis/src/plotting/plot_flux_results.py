@@ -9,8 +9,24 @@ from JULES_Plotting_and_Analysis.src.plotting.plot_col_at_daily_time import plot
 from JULES_Plotting_and_Analysis.src.load_jules_output_file import open_dataset
 
 
-def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, observation_colours, stress_indicator,
-                   title = None, smoothing = None, smoothing_type = 'mean', percentiles = None, x_range = None):
+def plot_flux_data(data_xarrays,
+                   observation_xarray,
+                   labels,
+                   data_colours,
+                   observation_colours,
+                   stress_indicator,
+                   title = None,
+                   smoothing = None,
+                   smoothing_type = 'mean',
+                   percentiles = None,
+                   x_range = None,
+                   gpp_key = "gpp_gb",
+                   latent_heat_key = "latent_heat",
+                   psi_root_key = "psi_root_zone_pft",
+                   psi_leaf_key = "psi_leaf_pft",
+                   beta_key = "fsmc_gb",
+                   observation_gpp_key = "GPP",
+                   observation_latent_heat_key = "Qle"):
 
     """
     Plot the flux data from a set of jules outputs.
@@ -52,16 +68,17 @@ def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, obser
     for i in range(len(data_xarrays)):
         timestep = data_xarrays[i]["time"].values[1] - data_xarrays[i]["time"].values[0]
         timestep = timestep.astype("timedelta64[s]").astype(int)
-        data_xarrays[i]["gpp_gb"] = data_xarrays[i]["gpp_gb"] * 1000 * timestep
+        data_xarrays[i][gpp_key] = data_xarrays[i][gpp_key] * 1000 * timestep
 
     # Convert GPP data units from umol m-2 s-1 to gC m-2 timestep-1
     # umol -> mol: * 1e-6
     # molCO2 -> molC: * 44/12.01
     # molC -> gC: * 12.01
     # s-1 -> timestep-1: * timestep
-    timestep = observation_xarray["time"].values[1] - observation_xarray["time"].values[0]
-    timestep = timestep.astype("timedelta64[s]").astype(int)
-    observation_xarray["GPP"] = observation_xarray["GPP"] * 1e-6 * 12.01 * timestep
+    if(observation_gpp_key != None):
+        timestep = observation_xarray["time"].values[1] - observation_xarray["time"].values[0]
+        timestep = timestep.astype("timedelta64[s]").astype(int)
+        observation_xarray[observation_gpp_key] = observation_xarray[observation_gpp_key] * 1e-6 * 12.01 * timestep
 
     # --- Figure setup ---
     # Create figure with multiple subplots.
@@ -82,27 +99,28 @@ def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, obser
 
     # ---- Plot the GPP data ----
     for i in range(len(data_xarrays)):
-        plot_daily_total(data_xarrays[i], "gpp_gb", c = data_colours[i], label = labels[i], axs = axs[0],
+        plot_daily_total(data_xarrays[i], gpp_key, c = data_colours[i], label = labels[i], axs = axs[0],
                          title = "", smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
                          x_range = x_range)
 
     # Plot the observational data
-    plot_daily_total(observation_xarray, "GPP", c=observation_colours, label="Observation", axs=axs[0],
-                     title="", smoothing=smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
-                     x_range=x_range)
+    if(observation_gpp_key != None):
+        plot_daily_total(observation_xarray, observation_gpp_key, c=observation_colours, label="Observation",
+                         axs=axs[0], title="", smoothing=smoothing, smoothing_type = smoothing_type,
+                         percentiles = percentiles, x_range=x_range)
 
     # set the y-axis label
     axs[0].set_ylabel("GPP (gC m-2 day-1)")
 
     # ---- Plot the latent heat data ----
     for i in range(len(data_xarrays)):
-        plot_daily_mean(data_xarrays[i], "latent_heat", c = data_colours[i], label = labels[i], axs = axs[1],
+        plot_daily_mean(data_xarrays[i], latent_heat_key, c = data_colours[i], label = labels[i], axs = axs[1],
                         title = "", smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
                         x_range = x_range)
 
-    plot_daily_mean(observation_xarray, "Qle", c=observation_colours, label="Observation", axs=axs[1],
-                    title="", smoothing=smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
-                    x_range=x_range)
+    plot_daily_mean(observation_xarray, observation_latent_heat_key, c=observation_colours, label="Observation",
+                    axs=axs[1], title="", smoothing=smoothing, smoothing_type = smoothing_type,
+                    percentiles = percentiles, x_range=x_range)
 
     # set the y-axis label
     axs[1].set_ylabel("Latent Heat (W m-2)")
@@ -111,10 +129,10 @@ def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, obser
     for i in range(len(data_xarrays)):
         if(stress_indicator[i] == "wp"):
             # Calculate the mean leaf and root zone water potential over plant functional types
-            data_xarrays[i]["psi_root_zone_mean"] = data_xarrays[i]["psi_root_zone_pft"].mean(dim= "pft")
-            data_xarrays[i]["psi_leaf_mean"] = data_xarrays[i]["psi_leaf_pft"].mean(dim= "pft")
+            data_xarrays[i]["psi_root_zone_mean"] = data_xarrays[i][psi_root_key].mean(dim= "pft")
+            data_xarrays[i]["psi_leaf_mean"] = data_xarrays[i][psi_leaf_key].mean(dim= "pft")
 
-            plot_col_at_daily_time(data_xarrays[i], "psi_root_zone_mean", "12:00:00",
+            plot_col_at_daily_time(data_xarrays[i], "psi_root_zone_mean", "06:00:00",
                                    c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing,
                                    smoothing_type = smoothing_type, percentiles = percentiles, linestyle = ":")
             plot_col_at_daily_time(data_xarrays[i], "psi_leaf_mean", "12:00:00",
@@ -124,7 +142,7 @@ def plot_flux_data(data_xarrays, observation_xarray, labels, data_colours, obser
 
         elif(stress_indicator[i] == "beta"):
             # Calculate the mean leaf and root zone fsmc value (beta) over plant functional types
-            plot_col_at_daily_time(data_xarrays[i], "fsmc_gb", "12:00:00",
+            plot_col_at_daily_time(data_xarrays[i], beta_key, "12:00:00",
                                    c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing,
                                    smoothing_type=smoothing_type, percentiles=percentiles, linestyle="--")
 
