@@ -38,7 +38,7 @@ def plot_flux_data(data_xarrays,
     :param stress_indicator: The stress indicator to plot. 'wp' water potential or 'beta' JULES fsmc value.
                              List of String.
     :param title: The title of the plot. String.
-    :return: None
+    :return: fig, axs
     """
 
 # --- Check input arrays. ---
@@ -132,7 +132,7 @@ def plot_flux_data(data_xarrays,
             data_xarrays[i]["psi_root_zone_mean"] = data_xarrays[i][psi_root_key].mean(dim= "pft")
             data_xarrays[i]["psi_leaf_mean"] = data_xarrays[i][psi_leaf_key].mean(dim= "pft")
 
-            plot_col_at_daily_time(data_xarrays[i], "psi_root_zone_mean", "06:00:00",
+            plot_col_at_daily_time(data_xarrays[i], "psi_leaf_mean", "06:00:00",
                                    c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing,
                                    smoothing_type = smoothing_type, percentiles = percentiles, linestyle = ":")
             plot_col_at_daily_time(data_xarrays[i], "psi_leaf_mean", "12:00:00",
@@ -145,11 +145,32 @@ def plot_flux_data(data_xarrays,
             plot_col_at_daily_time(data_xarrays[i], beta_key, "12:00:00",
                                    c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing,
                                    smoothing_type=smoothing_type, percentiles=percentiles, linestyle="--")
+        elif(stress_indicator[i] == "beta&wp"):
+            # Calculate the mean leaf and root zone fsmc value (beta) over plant functional types
+            plot_col_at_daily_time(data_xarrays[i], beta_key, "12:00:00",
+                                   c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing,
+                                   smoothing_type=smoothing_type, percentiles=percentiles, linestyle="--")
+
+            # Calculate the mean leaf and root zone water potential over plant functional types
+            data_xarrays[i]["psi_root_zone_mean"] = data_xarrays[i][psi_root_key].mean(dim= "pft")
+            data_xarrays[i]["psi_leaf_mean"] = data_xarrays[i][psi_leaf_key].mean(dim= "pft")
+
+            plot_col_at_daily_time(data_xarrays[i], "psi_root_zone_mean", "06:00:00",
+                                   c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing,
+                                   smoothing_type = smoothing_type, percentiles = percentiles, linestyle = ":")
+            plot_col_at_daily_time(data_xarrays[i], "psi_leaf_mean", "12:00:00",
+                                   c = data_colours[i], label = labels[i], title = "", axis = axs[2],
+                                   smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
+                                   linestyle = "-")
+        else:
+            raise ValueError("The input stress_indicator must be either 'wp', 'beta' or 'beta&wp'.")
 
     # set the y-axis label
     axs[2].set_ylabel("Leaf Water Potential (MPa)")
 
     axs[1].legend()
+
+    return fig, axs
 
 
 if __name__ == "__main__":
