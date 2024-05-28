@@ -16,6 +16,7 @@ def plot_flux_data(data_xarrays,
                    observation_colours,
                    stress_indicator,
                    title = None,
+                   fig_size = (10, 8),
                    smoothing = None,
                    smoothing_type = 'mean',
                    percentiles = None,
@@ -26,7 +27,8 @@ def plot_flux_data(data_xarrays,
                    psi_leaf_key = "psi_leaf_pft",
                    beta_key = "fsmc_gb",
                    observation_gpp_key = "GPP",
-                   observation_latent_heat_key = "Qle"):
+                   observation_latent_heat_key = "Qle",
+                   additional_sub_plots = 0):
 
     """
     Plot the flux data from a set of jules outputs.
@@ -38,6 +40,19 @@ def plot_flux_data(data_xarrays,
     :param stress_indicator: The stress indicator to plot. 'wp' water potential or 'beta' JULES fsmc value.
                              List of String.
     :param title: The title of the plot. String.
+    :param fig_size: The size of the figure. Tuple of integers.
+    :param smoothing: The number of days to smooth the data by. Integer.
+    :param smoothing_type: The type of smoothing to apply to the data. 'mean' or 'median'. String.
+    :param percentiles: The percentiles to plot the data with. List of floats.
+    :param x_range: The range of dates to plot, in the form [date]. List of datetime objects.
+    :param gpp_key: The key for the GPP variable. String.
+    :param latent_heat_key: The key for the latent heat variable. String.
+    :param psi_root_key: The key for the root zone water potential variable. String.
+    :param psi_leaf_key: The key for the leaf water potential variable. String.
+    :param beta_key: The key for the fsmc value variable. String.
+    :param observation_gpp_key: The key for the observational GPP variable. String.
+    :param observation_latent_heat_key: The key for the observational latent heat variable. String.
+    :param additional_sub_plots: The number of additional plots to add to the bottom of the figure. Integer.
     :return: fig, axs
     """
 
@@ -82,7 +97,7 @@ def plot_flux_data(data_xarrays,
 
     # --- Figure setup ---
     # Create figure with multiple subplots.
-    fig, axs = plt.subplots(3, 1, figsize=(10, 8), sharex=True)
+    fig, axs = plt.subplots(3 + additional_sub_plots, 1, figsize=fig_size, sharex=True)
 
     # Change padding around figure
     plt.margins(0.05)
