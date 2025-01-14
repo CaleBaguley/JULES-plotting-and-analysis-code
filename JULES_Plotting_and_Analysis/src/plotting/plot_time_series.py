@@ -15,7 +15,8 @@ def plot_time_series(data_xarray, col_key,
                      label=None,
                      axs=None,
                      title=None,
-                     linestyle='-'):
+                     linestyle='-',
+                     linewidth=1):
     """
     Plot the daily total for a given variable.
 
@@ -29,6 +30,8 @@ def plot_time_series(data_xarray, col_key,
     label (str): The label for the date in the plot's legend.
     axis (plt.axis): The axis to plot the data on.
     title (str): The title of the plot.
+    linestyle (str): The linestyle of the plot.
+    linewidth (int): The width of the line.
 
     Returns:
     None
@@ -62,21 +65,21 @@ def plot_time_series(data_xarray, col_key,
 
     if (smoothing == None):
         # Plot the daily GPP for all sites
-        data_xarray_tmp[col_key].plot(color=c, label=label, ax=axs, linestyle=linestyle)
+        data_xarray_tmp[col_key].plot(color=c, label=label, ax=axs, linestyle=linestyle, linewidth=linewidth)
     else:
         if(smoothing_type == 'mean'):
             # Plot the daily GPP for all sites
-            data_xarray_tmp['mean'].plot(color=c, label=label, ax=axs, linestyle=linestyle)
+            data_xarray_tmp['mean'].plot(color=c, label=label, ax=axs, linestyle=linestyle, linewidth=linewidth)
         elif(smoothing_type == 'median'):
             # Plot the daily GPP for all sites
-            data_xarray_tmp['median'].plot(color=c, label=label, ax=axs, linestyle=linestyle)
+            data_xarray_tmp['median'].plot(color=c, label=label, ax=axs, linestyle=linestyle, linewidth=linewidth)
 
             if(percentiles != None):
                 # Fill the area between the input confidence intervals
                 axs.fill_between(data_xarray_tmp['time'].values,
                                  data_xarray_tmp['lower'].values[:, 0, 0],
                                  data_xarray_tmp['upper'].values[:, 0, 0],
-                                 alpha=0.3, color=c, linestyle = linestyle)
+                                 alpha=0.3, color=c, linestyle = linestyle, linewidth=linewidth)
 
     # Set the x-axis range
     if (x_range != None):
