@@ -28,7 +28,8 @@ def plot_flux_data(data_xarrays,
                    beta_key = "fsmc_gb",
                    observation_gpp_key = "GPP",
                    observation_latent_heat_key = "Qle",
-                   additional_sub_plots = 0):
+                   additional_sub_plots = 0,
+                   legend = True):
 
     """
     Plot the flux data from a set of jules outputs.
@@ -183,7 +184,8 @@ def plot_flux_data(data_xarrays,
     # set the y-axis label
     axs[2].set_ylabel("Leaf Water Potential (MPa)")
 
-    axs[1].legend()
+    if(legend):
+        axs[1].legend()
 
     return fig, axs
 
