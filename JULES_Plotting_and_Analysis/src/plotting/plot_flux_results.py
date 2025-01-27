@@ -188,8 +188,35 @@ def plot_flux_data(data_xarrays,
     axs[2].set_ylabel("Leaf Water Potential (MPa)")
 
     if(legend):
-        axs[1].legend()
+        # Add a legend to the plots
+        legend_labels = []
+        legend_lines = []
+        
+        # Add the observation line to the legend
+        legend_labels.append("Observation")
+        legend_lines.append(plt.Line2D([0], [0],
+                                       color=observation_colours,
+                                       lw=2,
+                                       linestyle=observation_line_style))
+        
+        # Add the data lines to the legend
+        for i in range(len(data_xarrays)):
+            legend_labels.append(labels[i])
+            legend_lines.append(plt.Line2D([0], [0], color=data_colours[i], lw=2))
+        
+        axs[0].legend(legend_lines, legend_labels, ncol = 3, loc = "upper left")
 
+        # Add legend to the water potential plot
+        WP_legend_labels = ["fractional soil moisture content",
+                            "6am Root Zone Water Potential",
+                            "Midday Leaf Water Potential"]
+
+        WP_legend_lines = [plt.Line2D([0], [0], color="black", lw=2, linestyle="--"),
+                           plt.Line2D([0], [0], color="black", lw=2, linestyle=":"),
+                           plt.Line2D([0], [0], color="black", lw=2)]
+
+        axs[2].legend(WP_legend_lines, WP_legend_labels, ncol = 3, loc = "lower left")
+        
     return fig, axs
 
 
