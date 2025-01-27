@@ -28,13 +28,14 @@ def plot_flux_data(data_xarrays,
                    beta_key = "fsmc_gb",
                    observation_gpp_key = "GPP",
                    observation_latent_heat_key = "Qle",
+                   observation_line_style = "-",
                    additional_sub_plots = 0,
                    legend = True):
 
     """
     Plot the flux data from a set of jules outputs.
     :param data_xarrays: The input xarray datasets. Xarray.Dataset or list of Xarray.Dataset
-    :param observation_xarray: The observational data. Xarray.Dataset
+    :param observation_xarray: The observational data. Xarray.Dataset or None if no observational data is available.
     :param labels: The labels to plot the data with. String or list of strings.
     :param data_colours: The colours to plot the data in. String or list of strings.
     :param observation_colours: The colours to plot the observational data in. String.
@@ -46,13 +47,13 @@ def plot_flux_data(data_xarrays,
     :param smoothing_type: The type of smoothing to apply to the data. 'mean' or 'median'. String.
     :param percentiles: The percentiles to plot the data with. List of floats.
     :param x_range: The range of dates to plot, in the form [date]. List of datetime objects.
-    :param gpp_key: The key for the GPP variable. String.
-    :param latent_heat_key: The key for the latent heat variable. String.
+    :param gpp_key: The key for the GPP variable. String. Units kgC m-2 s-1
+    :param latent_heat_key: The key for the latent heat variable. String. Units W m-2
     :param psi_root_key: The key for the root zone water potential variable. String.
     :param psi_leaf_key: The key for the leaf water potential variable. String.
     :param beta_key: The key for the fsmc value variable. String.
-    :param observation_gpp_key: The key for the observational GPP variable. String.
-    :param observation_latent_heat_key: The key for the observational latent heat variable. String.
+    :param observation_gpp_key: The key for the observational GPP variable. String. Units umol m-2 s-1
+    :param observation_latent_heat_key: The key for the observational latent heat variable. String. Units W m-2
     :param additional_sub_plots: The number of additional plots to add to the bottom of the figure. Integer.
     :return: fig, axs
     """
@@ -91,7 +92,7 @@ def plot_flux_data(data_xarrays,
     # molCO2 -> molC: * 44/12.01
     # molC -> gC: * 12.01
     # s-1 -> timestep-1: * timestep
-    if(observation_gpp_key != None):
+    if(observation_xarray is not None and observation_gpp_key is not None):
         timestep = observation_xarray["time"].values[1] - observation_xarray["time"].values[0]
         timestep = timestep.astype("timedelta64[s]").astype(int)
         observation_xarray[observation_gpp_key] = observation_xarray[observation_gpp_key] * 1e-6 * 12.01 * timestep
@@ -120,10 +121,10 @@ def plot_flux_data(data_xarrays,
                          x_range = x_range)
 
     # Plot the observational data
-    if(observation_gpp_key != None):
+    if(observation_xarray is not None and observation_gpp_key is not None):
         plot_daily_total(observation_xarray, observation_gpp_key, c=observation_colours, label="Observation",
                          axs=axs[0], title="", smoothing=smoothing, smoothing_type = smoothing_type,
-                         percentiles = percentiles, x_range=x_range)
+                         percentiles = percentiles, x_range=x_range, linestyle = observation_line_style)
 
     # set the y-axis label
     axs[0].set_ylabel("GPP (gC m-2 day-1)")
@@ -134,9 +135,11 @@ def plot_flux_data(data_xarrays,
                         title = "", smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
                         x_range = x_range)
 
-    plot_daily_mean(observation_xarray, observation_latent_heat_key, c=observation_colours, label="Observation",
-                    axs=axs[1], title="", smoothing=smoothing, smoothing_type = smoothing_type,
-                    percentiles = percentiles, x_range=x_range)
+    # Plot the observational data
+    if (observation_xarray is not None and observation_latent_heat_key is not None):
+        plot_daily_mean(observation_xarray, observation_latent_heat_key, c=observation_colours, label="Observation",
+                        axs=axs[1], title="", smoothing=smoothing, smoothing_type = smoothing_type,
+                        percentiles = percentiles, x_range=x_range, linestyle = observation_line_style)
 
     # set the y-axis label
     axs[1].set_ylabel("Latent Heat (W m-2)")
