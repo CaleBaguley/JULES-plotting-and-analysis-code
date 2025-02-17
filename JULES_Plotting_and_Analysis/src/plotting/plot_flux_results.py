@@ -30,7 +30,8 @@ def plot_flux_data(data_xarrays,
                    observation_latent_heat_key = "Qle",
                    observation_line_style = "-",
                    additional_sub_plots = 0,
-                   legend = True):
+                   legend = True,
+                   axs_beta_range = (-0.05, 1.05)):
 
     """
     Plot the flux data from a set of jules outputs.
@@ -75,6 +76,17 @@ def plot_flux_data(data_xarrays,
     elif(type(data_colours) != list):
         raise ValueError("The input data_colours must be a string or list of strings.")
 
+    # -- Check if water potential and/or fsmc value is being plotted. --
+    if("beta" in stress_indicator or "beta&wp" in stress_indicator):
+        plot_beta = True
+    else:
+        plot_beta = False
+
+    if("wp" in stress_indicator or "beta&wp" in stress_indicator):
+        plot_wp = True
+    else:
+        plot_wp = False
+
     # --- Data processing. ---
 
     # First we need to convert the units of the GPP data from both the JULES output files and the observation file.
@@ -99,6 +111,20 @@ def plot_flux_data(data_xarrays,
     # --- Figure setup ---
     # Create figure with multiple subplots.
     fig, axs = plt.subplots(3 + additional_sub_plots, 1, figsize=fig_size, sharex=True)
+
+    # Used to hold the twin axis for the fractional soil moisture content
+    # If we need to plot both the water potential and the fractional soil moisture content
+    if(plot_beta and plot_wp):
+        axs_beta = axs[2].twinx()
+
+    # If we only need to plot the fractional soil moisture content
+    elif(plot_beta and not plot_wp):
+        axs_beta = axs[2]
+    # If we only need to plot the water potential
+    elif(plot_wp and not plot_beta):
+        axs_beta = None
+    else:
+        raise ValueError("Error: plotting nether water potential or fsmc. Please check the input stress_indicator.")
 
     # Change padding around figure
     plt.margins(0.05)
@@ -161,8 +187,9 @@ def plot_flux_data(data_xarrays,
         elif(stress_indicator[i] == "beta"):
             # Calculate the mean leaf and root zone fsmc value (beta) over plant functional types
             plot_col_at_daily_time(data_xarrays[i], beta_key, "12:00:00",
-                                   c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing,
+                                   c=data_colours[i], label=labels[i], title="", axis=axs_beta, smoothing=smoothing,
                                    smoothing_type=smoothing_type, percentiles=percentiles, linestyle="--")
+
         elif(stress_indicator[i] == "beta&wp"):
             # Calculate the mean leaf and root zone fsmc value (beta) over plant functional types
             plot_col_at_daily_time(data_xarrays[i], beta_key, "12:00:00",
@@ -173,18 +200,35 @@ def plot_flux_data(data_xarrays,
             data_xarrays[i]["psi_root_zone_mean"] = data_xarrays[i][psi_root_key].mean(dim= "pft")
             data_xarrays[i]["psi_leaf_mean"] = data_xarrays[i][psi_leaf_key].mean(dim= "pft")
 
+            # Plot the water potential data
             plot_col_at_daily_time(data_xarrays[i], "psi_root_zone_mean", "06:00:00",
                                    c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing,
                                    smoothing_type = smoothing_type, percentiles = percentiles, linestyle = ":")
+
+            # Plot the fractional soil moisture content data
             plot_col_at_daily_time(data_xarrays[i], "psi_leaf_mean", "12:00:00",
-                                   c = data_colours[i], label = labels[i], title = "", axis = axs[2],
+                                   c = data_colours[i], label = labels[i], title = "", axis = axs_beta,
                                    smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
                                    linestyle = "-")
         else:
             raise ValueError("The input stress_indicator must be either 'wp', 'beta' or 'beta&wp'.")
 
     # set the y-axis label
+    # First we set up the y-axis label for the water potential plot
+    # Note: this maths is used to align zero water potential with a fractional soil moisture content of 1
+    wp_y_min = -4.1
     axs[2].set_ylabel("Leaf Water Potential (MPa)")
+    wp_ylim = axs[2].get_ylim()
+    wp_y_min = max(wp_ylim[0], wp_y_min)
+    wp_y_max = - wp_y_min * (axs_beta_range[1]-1)/(1-axs_beta_range[0])
+    axs[2].set_ylim(wp_y_min, wp_y_max)
+
+    # Set up the yaxis for the fractional soil moisture content plot
+    # Note this will override the water potential settings if only fsmc is being plotted
+    if(axs_beta != None):
+        axs_beta.set_ylabel("Fractional Soil Moisture Content")
+        axs_beta.set_ylim(axs_beta_range)
+
 
     if(legend):
         # Add a legend to the plots
@@ -206,16 +250,21 @@ def plot_flux_data(data_xarrays,
         axs[0].legend(legend_lines, legend_labels, ncol = 3, loc = "upper left")
 
         # Add legend to the water potential plot
-        WP_legend_labels = ["fractional soil moisture content",
-                            "6am Root Zone Water Potential",
-                            "Midday Leaf Water Potential"]
+        WP_legend_labels = []
+        WP_legend_lines = []
 
-        WP_legend_lines = [plt.Line2D([0], [0], color="black", lw=2, linestyle="--"),
-                           plt.Line2D([0], [0], color="black", lw=2, linestyle=":"),
-                           plt.Line2D([0], [0], color="black", lw=2)]
+        if(plot_beta):
+            WP_legend_labels.append("Fractional Soil Moisture Content")
+            WP_legend_lines.append(plt.Line2D([0], [0], color="black", lw=2, linestyle="--"))
+
+        if(plot_wp):
+            WP_legend_labels.append("6am Root Zone Water Potential")
+            WP_legend_lines.append(plt.Line2D([0], [0], color="black", lw=2, linestyle=":"))
+            WP_legend_labels.append("Midday Leaf Water Potential")
+            WP_legend_lines.append(plt.Line2D([0], [0], color="black", lw=2))
 
         axs[2].legend(WP_legend_lines, WP_legend_labels, ncol = 3, loc = "lower left")
-        
+
     return fig, axs
 
 
