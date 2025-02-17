@@ -89,7 +89,6 @@ def plot_flux_data(data_xarrays,
 
     # Convert GPP data units from umol m-2 s-1 to gC m-2 timestep-1
     # umol -> mol: * 1e-6
-    # molCO2 -> molC: * 44/12.01
     # molC -> gC: * 12.01
     # s-1 -> timestep-1: * timestep
     if(observation_xarray is not None and observation_gpp_key is not None):
