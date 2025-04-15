@@ -44,16 +44,24 @@ def plot_time_series(data_xarray, col_key,
     if (smoothing != None):
         if(smoothing_type == 'mean'):
             # Calculate mean from the daily total GPP
-            data_xarray_tmp['mean'] = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True).mean())
+            data_xarray_tmp['mean'] = (data_xarray_tmp[col_key].rolling(time=smoothing,
+                                                                        center=True,
+                                                                        min_periods=1).mean())
         elif(smoothing_type == 'median'):
             # Calculate median and confidence intervals from the daily total GPP
-            data_xarray_tmp['median'] = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
+            data_xarray_tmp['median'] = (data_xarray_tmp[col_key].rolling(time=smoothing,
+                                                                          center=True,
+                                                                          min_periods=1)
                                          .construct('tmp').quantile(.50, dim='tmp'))
 
             if(percentiles != None):
-                data_xarray_tmp['lower']  = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
+                data_xarray_tmp['lower']  = (data_xarray_tmp[col_key].rolling(time=smoothing,
+                                                                              center=True,
+                                                                              min_periods=1)
                                              .construct('tmp').quantile(1-percentiles[0]/100., dim='tmp'))
-                data_xarray_tmp['upper']  = (data_xarray_tmp[col_key].rolling(time=smoothing, center=True)
+                data_xarray_tmp['upper']  = (data_xarray_tmp[col_key].rolling(time=smoothing,
+                                                                              center=True,
+                                                                              min_periods=1)
                                              .construct('tmp').quantile(1-percentiles[1]/100., dim='tmp'))
         else:
             raise ValueError("The input smoothing_type must be either 'mean' or 'median'.")
