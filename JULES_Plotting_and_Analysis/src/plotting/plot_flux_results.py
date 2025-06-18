@@ -29,6 +29,7 @@ def plot_flux_data(data_xarrays,
                    observation_gpp_key = "GPP",
                    observation_latent_heat_key = "Qle",
                    observation_line_style = "-",
+                   observation_line_width = 2,
                    additional_sub_plots = 0,
                    legend = True,
                    axs_beta_range = (-0.05, 1.05)):
@@ -149,7 +150,8 @@ def plot_flux_data(data_xarrays,
     if(observation_xarray is not None and observation_gpp_key is not None):
         plot_daily_total(observation_xarray, observation_gpp_key, c=observation_colours, label="Observation",
                          axs=axs[0], title="", smoothing=smoothing, smoothing_type = smoothing_type,
-                         percentiles = percentiles, x_range=x_range, linestyle = observation_line_style)
+                         percentiles = percentiles, x_range=x_range, linestyle = observation_line_style,
+                         linewidth = observation_line_width)
 
     # set the y-axis label
     axs[0].set_ylabel("GPP (gC m-2 day-1)")
@@ -164,7 +166,8 @@ def plot_flux_data(data_xarrays,
     if (observation_xarray is not None and observation_latent_heat_key is not None):
         plot_daily_mean(observation_xarray, observation_latent_heat_key, c=observation_colours, label="Observation",
                         axs=axs[1], title="", smoothing=smoothing, smoothing_type = smoothing_type,
-                        percentiles = percentiles, x_range=x_range, linestyle = observation_line_style)
+                        percentiles = percentiles, x_range=x_range, linestyle = observation_line_style,
+                        linewidth = observation_line_width)
 
     # set the y-axis label
     axs[1].set_ylabel("Latent Heat (W m-2)")
@@ -173,13 +176,20 @@ def plot_flux_data(data_xarrays,
     for i in range(len(data_xarrays)):
         if(stress_indicator[i] == "wp"):
             # Calculate the mean leaf and root zone water potential over plant functional types
-            data_xarrays[i]["psi_root_zone_mean"] = data_xarrays[i][psi_root_key].mean(dim= "pft")
-            data_xarrays[i]["psi_leaf_mean"] = data_xarrays[i][psi_leaf_key].mean(dim= "pft")
+            if("pft" in list(data_xarrays[i].keys())):
+                data_xarrays[i]["psi_root_zone_mean"] = data_xarrays[i][psi_root_key].mean(dim= "pft")
+                data_xarrays[i]["psi_leaf_mean"] = data_xarrays[i][psi_leaf_key].mean(dim= "pft")
 
-            plot_col_at_daily_time(data_xarrays[i], "psi_leaf_mean", "06:00:00",
+                tmp_psi_leaf_key = "psi_leaf_mean"
+                tmp_psi_root_key = "psi_root_zone_mean"
+            else:
+                tmp_psi_leaf_key = psi_leaf_key
+                tmp_psi_root_key = psi_root_key
+
+            plot_col_at_daily_time(data_xarrays[i], tmp_psi_root_key, "06:00:00",
                                    c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing,
                                    smoothing_type = smoothing_type, percentiles = percentiles, linestyle = ":")
-            plot_col_at_daily_time(data_xarrays[i], "psi_leaf_mean", "12:00:00",
+            plot_col_at_daily_time(data_xarrays[i], tmp_psi_leaf_key, "12:00:00",
                                    c = data_colours[i], label = labels[i], title = "", axis = axs[2],
                                    smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
                                    linestyle = "-")
@@ -197,16 +207,23 @@ def plot_flux_data(data_xarrays,
                                    smoothing_type=smoothing_type, percentiles=percentiles, linestyle="--")
 
             # Calculate the mean leaf and root zone water potential over plant functional types
-            data_xarrays[i]["psi_root_zone_mean"] = data_xarrays[i][psi_root_key].mean(dim= "pft")
-            data_xarrays[i]["psi_leaf_mean"] = data_xarrays[i][psi_leaf_key].mean(dim= "pft")
+            if ("pft" in list(data_xarrays[i].keys())):
+                data_xarrays[i]["psi_root_zone_mean"] = data_xarrays[i][psi_root_key].mean(dim= "pft")
+                data_xarrays[i]["psi_leaf_mean"] = data_xarrays[i][psi_leaf_key].mean(dim= "pft")
+
+                tmp_psi_leaf_key = "psi_leaf_mean"
+                tmp_psi_root_key = "psi_root_zone_mean"
+            else:
+                tmp_psi_leaf_key = psi_leaf_key
+                tmp_psi_root_key = psi_root_key
 
             # Plot the water potential data
-            plot_col_at_daily_time(data_xarrays[i], "psi_root_zone_mean", "06:00:00",
+            plot_col_at_daily_time(data_xarrays[i], tmp_psi_root_key, "06:00:00",
                                    c=data_colours[i], label=labels[i], title="", axis=axs[2], smoothing=smoothing,
                                    smoothing_type = smoothing_type, percentiles = percentiles, linestyle = ":")
 
             # Plot the fractional soil moisture content data
-            plot_col_at_daily_time(data_xarrays[i], "psi_leaf_mean", "12:00:00",
+            plot_col_at_daily_time(data_xarrays[i], tmp_psi_leaf_key, "12:00:00",
                                    c = data_colours[i], label = labels[i], title = "", axis = axs_beta,
                                    smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
                                    linestyle = "-")

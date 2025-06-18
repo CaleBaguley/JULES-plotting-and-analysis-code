@@ -69,10 +69,10 @@ def plot_daily_mean(data_xarray, col_key,
     None
     """
 
-    # Calculate the daily total GPP
+    # Calculate the daily mean
     data_xarray_daily_total = data_xarray[[col_key]].resample(time="1D").mean()
 
-    # Plot the daily total GPP
+    # Plot the daily mean
     plot_time_series(data_xarray_daily_total, col_key,
                      smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
                      x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle,
