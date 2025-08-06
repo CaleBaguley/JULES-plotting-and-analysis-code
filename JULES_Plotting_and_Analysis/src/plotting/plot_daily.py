@@ -27,7 +27,7 @@ def plot_daily_total(data_xarray, col_key,
     label (str): The label for the date in the plot's legend.
     axis (plt.axis): The axis to plot the data on.
     title (str): The title of the plot.
-    linesyle (str): The linestyle of the plot.
+    linestyle (str): The linestyle of the plot.
     linewidth (float): The width of the line.
 
     Returns:
@@ -62,7 +62,7 @@ def plot_daily_mean(data_xarray, col_key,
     label (str): The label for the date in the plot's legend.
     axis (plt.axis): The axis to plot the data on.
     title (str): The title of the plot.
-    linesyle (str): The linestyle of the plot.
+    linestyle (str): The linestyle of the plot.
     linewidth (float): The width of the line.
 
     Returns:
@@ -83,7 +83,7 @@ def plot_daily_mean(data_xarray, col_key,
 
 def plot_daily_median(data_xarray, col_key,
                       smoothing = None, smoothing_type = 'mean', percentiles = None, x_range = None, c ='blue', label = None,
-                      axs = None, title = None, linestyle = '-'):
+                      axs = None, title = None, linestyle = '-', linewidth = 1.):
     """
     Plot the daily median for a given variable.
 
@@ -97,6 +97,8 @@ def plot_daily_median(data_xarray, col_key,
     label (str): The label for the date in the plot's legend.
     axis (plt.axis): The axis to plot the data on.
     title (str): The title of the plot.
+    linestyle (str): The linestyle of the plot.
+    linewidth (float): The width of the line.
 
     Returns:
     None
@@ -108,14 +110,15 @@ def plot_daily_median(data_xarray, col_key,
     # Plot the daily total GPP
     plot_time_series(data_xarray_daily_total, col_key,
                      smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
-                     x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle)
+                     x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle,
+                     linewidth = linewidth)
 
     return None
 
 
 def plot_daily_max(data_xarray, col_key,
                    smoothing = None, smoothing_type = 'mean', percentiles = None, x_range = None, c ='blue', label = None,
-                   axs = None, title = None, linestyle = '-'):
+                   axs = None, title = None, linestyle = '-', linewidth = 1.):
     """
     Plot the daily maximum for a given variable.
 
@@ -129,6 +132,8 @@ def plot_daily_max(data_xarray, col_key,
     label (str): The label for the date in the plot's legend.
     axis (plt.axis): The axis to plot the data on.
     title (str): The title of the plot.
+    linestyle (str): The linestyle of the plot.
+    linewidth (float): The width of the line.
 
     Returns:
     None
@@ -140,14 +145,15 @@ def plot_daily_max(data_xarray, col_key,
     # Plot the daily total GPP
     plot_time_series(data_xarray_daily_total, col_key,
                      smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
-                     x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle)
+                     x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle,
+                     linewidth = linewidth)
 
     return None
 
 
 def plot_daily_min(data_xarray, col_key,
                    smoothing = None, smoothing_type = 'mean', percentiles = None, x_range = None, c ='blue', label = None,
-                   axs = None, title = None, linestyle = '-'):
+                   axs = None, title = None, linestyle = '-', linewidth = 1.):
     """
     Plot the daily minimum for a given variable.
 
@@ -161,6 +167,8 @@ def plot_daily_min(data_xarray, col_key,
     label (str): The label for the date in the plot's legend.
     axis (plt.axis): The axis to plot the data on.
     title (str): The title of the plot.
+    linestyle (str): The linestyle of the plot.
+    linewidth (float): The width of the line.
 
     Returns:
     None
@@ -172,14 +180,15 @@ def plot_daily_min(data_xarray, col_key,
     # Plot the daily total GPP
     plot_time_series(data_xarray_daily_total, col_key,
                      smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
-                     x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle)
+                     x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle,
+                     linewidth = linewidth)
 
     return None
 
 
 def plot_daily_std(data_xarray, col_key,
                    smoothing = None, smoothing_type = 'mean', percentiles = None, x_range = None, c ='blue', label = None,
-                   axs = None, title = None, linestyle = '-'):
+                   axs = None, title = None, linestyle = '-', linewidth = 1.):
     """
     Plot the daily standard deviation for a given variable.
 
@@ -193,6 +202,8 @@ def plot_daily_std(data_xarray, col_key,
     label (str): The label for the date in the plot's legend.
     axis (plt.axis): The axis to plot the data on.
     title (str): The title of the plot.
+    linestyle (str): The linestyle of the plot.
+    linewidth (float): The width of the line.
 
     Returns:
     None
@@ -204,6 +215,7 @@ def plot_daily_std(data_xarray, col_key,
     # Plot the daily total GPP
     plot_time_series(data_xarray_daily_total, col_key,
                      smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
-                     x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle)
+                     x_range = x_range, c = c, label = label, axs = axs, title = title, linestyle = linestyle,
+                     linewidth = linewidth)
 
     return None
