@@ -28,7 +28,9 @@ def plot_flux_data(data_xarrays,
                    beta_key = "fsmc_gb",
                    observation_gpp_key = "GPP",
                    observation_latent_heat_key = "Qle",
+                   data_line_style = "-",
                    observation_line_style = "-",
+                   data_line_width = 2,
                    observation_line_width = 2,
                    additional_sub_plots = 0,
                    legend = True,
@@ -56,7 +58,13 @@ def plot_flux_data(data_xarrays,
     :param beta_key: The key for the fsmc value variable. String.
     :param observation_gpp_key: The key for the observational GPP variable. String. Units umol m-2 s-1
     :param observation_latent_heat_key: The key for the observational latent heat variable. String. Units W m-2
+    :param data_line_style: The line style for the data. String.
+    :param observation_line_style: The line style for the observational data. String.
+    :param data_line_width: The line width for the data. Float.
+    :param observation_line_width: The line width for the observational data. Float.
     :param additional_sub_plots: The number of additional plots to add to the bottom of the figure. Integer.
+    :param legend: Whether to add a legend to the plot. Boolean.
+    :param axs_beta_range: The range of the y-axis for the fractional soil moisture content plot. Tuple of floats.
     :return: fig, axs
     """
 
@@ -144,7 +152,7 @@ def plot_flux_data(data_xarrays,
     for i in range(len(data_xarrays)):
         plot_daily_total(data_xarrays[i], gpp_key, c = data_colours[i], label = labels[i], axs = axs[0],
                          title = "", smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
-                         x_range = x_range)
+                         x_range = x_range, linestyle = data_line_style, linewidth = data_line_width)
 
     # Plot the observational data
     if(observation_xarray is not None and observation_gpp_key is not None):
@@ -160,7 +168,7 @@ def plot_flux_data(data_xarrays,
     for i in range(len(data_xarrays)):
         plot_daily_mean(data_xarrays[i], latent_heat_key, c = data_colours[i], label = labels[i], axs = axs[1],
                         title = "", smoothing = smoothing, smoothing_type = smoothing_type, percentiles = percentiles,
-                        x_range = x_range)
+                        x_range = x_range, linestyle = data_line_style, linewidth = data_line_width)
 
     # Plot the observational data
     if (observation_xarray is not None and observation_latent_heat_key is not None):
